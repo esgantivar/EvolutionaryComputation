@@ -60,11 +60,19 @@ public class ShiftedandRotatedElliptic implements Function {
 		}
 		double anotherz1[];
 		int c = 0;
+		
 		for (int i = 0; i < s_size; i++) {
 			anotherz1 = Bencmarks.rotateVector(i, c, s, Pvector, anotherz, r25, r50, r100);
 			c = c + s[i];
 			result += w[i] * Bencmarks.elliptic(anotherz1, s[i]);
 		}
+		
+		double z[] = new double[DIM - c];
+		
+		for (int i = c ; i < DIM; i++) {
+			z[i - c] = anotherz[Pvector[i]];
+		}
+		result += Bencmarks.elliptic(z, DIM - c);
 		return result;
 	}
 
