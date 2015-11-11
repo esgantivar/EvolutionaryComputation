@@ -180,7 +180,7 @@ public class Bencmarks {
 		String p[] = ss.get(0).split(",");
 		int counter = 0;
 		for (String string : p) {
-			d[counter++] = Integer.valueOf(string);
+			d[counter++] = Integer.valueOf(string) - 1;
 		}
 		return d;
 	}
