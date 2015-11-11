@@ -1,16 +1,19 @@
 package Function;
 
+import java.io.FileNotFoundException;
+
 import util.Bencmarks;
 
-public class ShiftedAckleysFunction implements Function {
+@SuppressWarnings("unused")
+public class ShiftedAckleys implements Function {
 	private double[] Ovector;
-	private int minX;
+	private int minX;	
 	private int maxX;
 	private int ID;
 	private double[] anotherz;
 	private int DIM;
 
-	public ShiftedAckleysFunction(int dimension) {
+	public ShiftedAckleys(int dimension) {
 		Ovector = null;
 		minX = -32;
 		maxX = 32;
@@ -21,9 +24,15 @@ public class ShiftedAckleysFunction implements Function {
 
 	@Override
 	public Double apply(double[] x) {
+
 		if (Ovector == null) {
-			Ovector = Bencmarks.readOvector(ID);
+			try {
+				Ovector = Bencmarks.readOvector(ID, DIM);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
+
 		for (int i = DIM - 1; i >= 0; i--) {
 			anotherz[i] = x[i] - Ovector[i];
 		}

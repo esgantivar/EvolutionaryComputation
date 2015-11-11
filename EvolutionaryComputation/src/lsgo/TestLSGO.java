@@ -1,5 +1,6 @@
 package lsgo;
 
+import java.io.FileNotFoundException;
 import java.util.Random;
 
 import Function.*;
@@ -12,6 +13,7 @@ import replacements.Generational;
 import replacements.Replacement;
 import selectors.Roulette;
 import selectors.Selector;
+import util.Bencmarks;
 
 public class TestLSGO {
 	
@@ -29,10 +31,23 @@ public class TestLSGO {
 		int nPop = 100;
 		int maxIterations = 2000;
 		
-		Function f = new ShiftedEllipticFunction(1000);
+		//Function f = new ShiftedElliptic(DIM);
+		//double a[] = {2.3,4.5,-1.2};
+		//System.out.println(f.apply(a));
 		//Function f = new Schwefel();
 		//Algorithm search = new Algorithm(DIM, nPop, operators, min, max, selector, replacement, maxIterations, f);	
 		//search.iterates();
+		try {
+			double a[] = Bencmarks.readW(13, 20);
+			for (double i : a) {
+				System.out.println(i);
+			}
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 }
