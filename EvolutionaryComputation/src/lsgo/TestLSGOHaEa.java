@@ -47,7 +47,7 @@ public class TestLSGOHaEa {
 	
 	public static void real(){
 		// Search Space definition
-		int DIM = 1;
+		int DIM = 100;
 		double[] min = DoubleArray.create(DIM, -100);
 		double[] max = DoubleArray.create(DIM, 100);
     	Space<double[]> space = new HyperCube( min, max );    	

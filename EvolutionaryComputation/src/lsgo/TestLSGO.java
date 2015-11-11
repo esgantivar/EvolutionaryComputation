@@ -31,9 +31,8 @@ public class TestLSGO {
 		
 		Function f = new ShiftedEllipticFunction(1000);
 		//Function f = new Schwefel();
-		Algorithm search = new Algorithm(DIM, nPop, operators, min, max, selector, replacement, maxIterations, f);	
-		search.iterates();
-		
+		//Algorithm search = new Algorithm(DIM, nPop, operators, min, max, selector, replacement, maxIterations, f);	
+		//search.iterates();
 	}
 
 }
