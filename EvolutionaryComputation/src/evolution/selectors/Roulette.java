@@ -1,16 +1,12 @@
-package selectors;
+package evolution.selectors;
 
 import java.util.Random;
 import evolution.Population;
 
-public class Roulette extends Selector{
+public class Roulette implements Selector{
 	
 	private double tickets[];
 	private Population pop;
-	
-	public Roulette(){
-		name = "Roulette";
-	}
 	
 	public void setPopulation(Population pop_) {
 		pop = pop_;

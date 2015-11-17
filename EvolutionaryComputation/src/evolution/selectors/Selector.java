@@ -1,9 +1,8 @@
-package selectors;
+package evolution.selectors;
 
 import evolution.Population;
 
-public abstract class Selector {
-	protected String name;
+public interface Selector {
 	public abstract void setPopulation(Population pop_);
 	public abstract Population getParents();
 }
