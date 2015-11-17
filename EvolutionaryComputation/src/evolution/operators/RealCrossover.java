@@ -1,14 +1,14 @@
-package geneticOperators;
+package evolution.operators;
 
 import java.util.Random;
 
-import evolution.Individual;
-import evolution.RealIndividual;
+import evolution.individual.Individual;
+import evolution.individual.RealIndividual;
 
-public class Crossover extends GeneticOperator {
+public class RealCrossover extends GeneticOperator<RealIndividual,RealIndividual> {
 	private Random rnd;
 
-	public Crossover() {
+	public RealCrossover() {
 		arity = 2;
 		rnd = new Random();
 	}
@@ -28,20 +28,25 @@ public class Crossover extends GeneticOperator {
 			temp1[i] = (double) parents[1].getGene(i).getValue();
 			temp2[i] = (double) parents[0].getGene(i).getValue();
 		}
-		offsprings[0] = new RealIndividual(temp1,parents[0].getF());
-		offsprings[1] = new RealIndividual(temp2,parents[0].getF());
+		offsprings[0] = new RealIndividual(temp1,parents[0].getFunction());
+		offsprings[1] = new RealIndividual(temp2,parents[0].getFunction());
 		return offsprings;
 	}
+	@Override
+	public RealIndividual getIndividual(RealIndividual ind) {
+		return null;
+	}
 
-	public Individual[] CrossAll(Individual parents[]) {
+	@Override
+	public RealIndividual[] getIndividuals(RealIndividual[] parents) {
 		int dim = parents[0].getDimension();
-		Individual offsprings[] = new Individual[2];
+		RealIndividual offsprings[] = new RealIndividual[2];
 
 		double temp1[] = new double[parents[0].getDimension()];
 		double temp2[] = new double[parents[0].getDimension()];
 
 		for (int i = 0; i < dim; i++) {
-			if (rnd.nextDouble() < 0.5) {
+			if (Math.random() < 0.5) {
 				temp1[i] = (double) parents[0].getGene(i).getValue();
 				temp2[i] = (double) parents[1].getGene(i).getValue();
 			} else {
@@ -49,20 +54,9 @@ public class Crossover extends GeneticOperator {
 				temp2[i] = (double) parents[0].getGene(i).getValue();
 			}
 		}
-		offsprings[0] = new RealIndividual(temp1,parents[0].getF());
-		offsprings[1] = new RealIndividual(temp2,parents[0].getF());
+		offsprings[0] = new RealIndividual(temp1,parents[0].getFunction());
+		offsprings[1] = new RealIndividual(temp2,parents[0].getFunction());
 		return offsprings;
-	}
-
-	@Override
-	public Individual[] getIndividuals(Individual parents[]) {
-		return CrossAll(parents);
-	}
-
-	@Override
-	public RealIndividual getIndividual(RealIndividual ind) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
