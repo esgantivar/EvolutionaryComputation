@@ -1,39 +1,44 @@
 package evolution;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import Function.Function;
+import evolution.individual.Individual;
+import evolution.individual.Space;
 
-public class Population {
-	public int DIM;
+public class Population<T> {
+	public int popSize;
 	private double fitnessAll[];
-	private Function f;
+	private Function<T> f;
+	private Space<T> space;
 
-	private ArrayList<Individual> population;
+	private ArrayList<Individual<T>> population;
 
-	public Population(int DIM_, int nPopulation, double min, double max, Function f_) {
-		DIM = DIM_;
+	public Population(int popSize_, int nPopulation, Space<T> space_, Function<T> f_) {
+		popSize = popSize_;
 		f = f_;
+		space = space_;
 		population = new ArrayList<>();
 		for (int i = 0; i < nPopulation; i++) {
-			population.add(new RealIndividual(DIM, max, min,f));
+			population.add(new Individual<T>(popSize, f,space));
 		}
 	}
 	
-	public Function getF(){
+	public Function<T> getF(){
 		return f;
 	}
 	
-	public Population(int DIM_,Function f_,ArrayList<Individual> inds){
+	public Population(int DIM_,Function<T> f_,ArrayList<Individual<T>> inds){
 		population = new ArrayList<>(inds);
-		DIM = DIM_;
+		popSize = DIM_;
 		f = f_;
 	}
 	
-	public Population(Population pop){
+	public Population(Population<T> pop){
 		population = new ArrayList<>(pop.population);
 		f = pop.f;
-		DIM = pop.DIM;
+		popSize = pop.popSize;
 		fitnessAll();
 	}
 
@@ -41,28 +46,34 @@ public class Population {
 		return population.size();
 	}
 
-	public void setFunction(Function f_) {
+	public void setFunction(Function<T> f_) {
 		f = f_;
 	}
 
-	public Population(int DIM_) {
-		DIM = DIM_;
+	public Population(int popSize_) {
+		popSize= popSize_;
 		population = new ArrayList<>();
 	}
 
-	public void addIndividual(Individual ind) {
-		population.add(new RealIndividual((RealIndividual) ind,f));
+	public void addIndividual(Individual<T> ind) {
+		population.add(new Individual<T>(ind));
+	}
+	
+	public void addIndividuals(List<Individual<T>> inds){
+		for (Individual<T> ind : inds) {
+			population.add(ind);
+		}
 	}
 
-	public Individual getIndividual(int index) {
+	public Individual<T> getIndividual(int index) {
 		return population.get(index);
 	}
 
 	public double[] fitnessAll() {
 		fitnessAll = new double[population.size()];
 		int counter = 0;
-		for (Individual ind : population) {
-			fitnessAll[counter++] = ind.fitness(f);
+		for (Individual<?> ind : population) {
+			fitnessAll[counter++] = ind.getFitness();
 		}
 		return fitnessAll;
 	}
@@ -71,22 +82,21 @@ public class Population {
 		try {
 			return fitnessAll[index];
 		} catch (Exception e) {
-			return population.get(index).fitness(f);
+			return population.get(index).computeFitness();
 		}
 	}
 	
-	public ArrayList<Individual> getIndividuals(){
+	public List<Individual<T>> getIndividuals(){
 		return population;
 	}
 
 	@Override
 	public String toString() {
-		String s = "";
+		StringBuilder s = new StringBuilder();
 		for (double d : fitnessAll) {
-			//s += d.toString() + "\n";
-			s += d + "\n";
+			s.append(d + "\n") ;
 		}
-		return s;
+		return s.toString();
 	}
 
 }

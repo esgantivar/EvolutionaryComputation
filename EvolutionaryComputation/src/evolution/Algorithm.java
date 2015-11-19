@@ -1,187 +1,109 @@
 package evolution;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 import Function.Function;
-import geneticOperators.GeneticOperator;
-import replacements.Replacement;
-import selectors.Selector;
-import util.Solution;
+import evolution.individual.Space;
+import evolution.operators.Operator;
+import evolution.replacements.Replacement;
+import evolution.selectors.Selector;
+import evolution.util.Solution;
 
-public class Algorithm {
-	private Population pop;
-	private Selector selectorP;
-	private Replacement replacement;
+public class Algorithm<T> {
+	private Population<T> pop;
+	private Selector selector;
+	private Replacement<T> replacement;
+	private List<Operator<T>> operators;
+	private Space<T> space;
 	private int maxIterations;
-	private int DIM;
-	private GeneticOperator[] operators;
-	private Random rnd;
-	private Function f;
-	private double rates[];
 
-	public Algorithm(int DIM_, int nPop, GeneticOperator operators_[], double min, double max, Selector selectorP_,
-			Replacement replacement_, int maxIterations_, Function f_) {
-		f = f_;
-		DIM = DIM_;
-		pop = new Population(DIM, nPop, min, max, f);
-		operators = operators_;
-		rates = new double[operators.length + 1];
-		selectorP = selectorP_;
-		selectorP.setPopulation(pop);
+	public Algorithm(int DIM, Space<T> space_, Selector selector_, Replacement<T> replacement_,
+			List<Operator<T>> operators_, int max, Function<T> f) {
+		space = space_;
+		selector = selector_;
 		replacement = replacement_;
-		maxIterations = maxIterations_;
+		operators = operators_;
+		maxIterations = max;
+		pop = new Population<>(space.getDimension(), DIM, space_, f);
+		selector.setPopulation(pop);
 		initializeRatesOperator();
-		rangeOperator();
 	}
 
 	private void initializeRatesOperator() {
-		rnd = new Random();
-		double tempRates[] = new double[operators.length];
+		double tempRates[] = new double[operators.size()];
 		double total = 0.0;
-		for (int i = 0; i < operators.length; i++) {
-			tempRates[i] = rnd.nextDouble();
+		for (int i = 0; i < operators.size(); i++) {
+			tempRates[i] = Math.random();
 			total += tempRates[i];
 		}
-		for (int i = 0; i < operators.length; i++) {
-			operators[i].setRate(tempRates[i] / total);
+		for (int i = 0; i < operators.size(); i++) {
+			operators.get(i).setRate(tempRates[i] / total);
 		}
 	}
 
 	private void normalizeRates() {
-		double tempRates[] = new double[operators.length];
+		double tempRates[] = new double[operators.size()];
 		double total = 0.0;
-		for (int i = 0; i < operators.length; i++) {
-			tempRates[i] = operators[i].getRate();
+		for (int i = 0; i < operators.size(); i++) {
+			tempRates[i] = operators.get(i).getRate();
 			total += tempRates[i];
 		}
-		for (int i = 0; i < operators.length; i++) {
-			operators[i].setRate(tempRates[i] / total);
-		}
-		rangeOperator();
-	}
-
-	private void rangeOperator() {
-		rates = new double[operators.length + 1];
-		rates[0] = 0;
-		for (int i = 1; i < operators.length + 1; i++) {
-			rates[i] = rates[i - 1] + operators[i - 1].getRate();
+		for (int i = 0; i < operators.size(); i++) {
+			operators.get(i).setRate(tempRates[i] / total);
 		}
 	}
 
-	private int selectOperator(double ticket) {
-		int index = operators.length;
-		double lowLimit = 0.0;
-		for (int i = 1; i < rates.length; i++) {
-			if (ticket >= lowLimit && ticket < rates[i]) {
+	private int selectOperator() {
+		double range[] = new double[operators.size() + 1];
+		range[0] = 0.0;
+		for (int i = 1; i < operators.size() + 1; i++) {
+			range[i] = range[i - 1] + operators.get(i - 1).getRate();
+		}
+		int index = range.length - 2;
+		double t = Math.random();
+		double lowerLim = 0.0;
+		for (int i = 1; i < range.length; i++) {
+			if (t >= lowerLim && t < range[i]) {
 				index = i - 1;
 				break;
 			} else {
-				lowLimit = rates[i];
+				lowerLim = range[i];
 			}
 		}
 		return index;
 	}
 
 	public void iterate() {
-		rnd = new Random();
 		int t = 0;
 		while (t < maxIterations) {
-			Population parents = selectorP.getParents();
-			parents.setFunction(f);
-			Population offsprings = new Population(pop.DIM);
-			offsprings.setFunction(f);
-
+			@SuppressWarnings("unchecked")
+			Population<T> parents = selector.getParents();
+			parents.setFunction(pop.getF());
+			Population<T> offsprings = new Population<>(space.getDimension());
+			offsprings.setFunction(pop.getF());
 			int i = 0;
+			int indexOperator;
 			while (i < pop.nPop()) {
-				double delta = rnd.nextDouble(); // probability ticket
-				int index = selectOperator(delta);
-				if (operators[index].arity < 2) {
-					offsprings.addIndividual(new RealIndividual(
-							operators[index].getIndividual((RealIndividual) parents.getIndividual(i)), f));
-
-					delta = rnd.nextDouble(); // learning rate
-					if (offsprings.fitnessOne(i) >= parents.fitnessOne(i)) {
-						operators[index].setRate((1 + delta) * operators[index].getRate());// reward
-					} else {
-						operators[index].setRate((1 - delta) * operators[index].getRate());// punish
-					}
-					normalizeRates();
-
-				} else {
-					Individual par[];
-					par = new Individual[2];
+				indexOperator = selectOperator();
+				if (operators.get(indexOperator).arity() == 2) {
 					if ((i + 1) < pop.nPop()) {
-						par[0] = parents.getIndividual(i++);
-						par[1] = parents.getIndividual(i);
-						Individual offspring[] = operators[index].getIndividuals(par);
-						offsprings.addIndividual(offspring[0]);
-						offsprings.addIndividual(offspring[1]);
+						offsprings.addIndividuals(operators.get(indexOperator)
+								.getIndividuals(new ArrayList<>(parents.getIndividuals().subList(i, i+2 ))));
+						i++;
 					} else {
-						par[0] = parents.getIndividual(i);
-						par[1] = parents.getIndividual(i);
-						Individual offspring[] = operators[index].getIndividuals(par);
-						offsprings.addIndividual(offspring[0]);
+						offsprings.addIndividual(operators.get(indexOperator).getIndividual(parents.getIndividual(i)));
 					}
-
-					delta = rnd.nextDouble(); // learning rate
-					if (offsprings.fitnessOne(i - 1) >= parents.fitnessOne(i - 1)) {
-						operators[index].setRate((1 + delta) * operators[index].getRate());// reward
-					} else {
-						operators[index].setRate((1 - delta) * operators[index].getRate());// punish
-
-					}
-					normalizeRates();
-					delta = rnd.nextDouble(); // learning rate
-					if (offsprings.fitnessOne(i) >= parents.fitnessOne(i)) {
-						operators[index].setRate((1 + delta) * operators[index].getRate());// reward
-					} else {
-						operators[index].setRate((1 - delta) * operators[index].getRate());// punish
-					}
-					normalizeRates();
+				} else if (operators.get(indexOperator).arity() == 1) {
+					offsprings.addIndividual(operators.get(indexOperator).getIndividual(parents.getIndividual(i++)));
 				}
 				i++;
 			}
-			normalizeRates();
-			pop = new Population(replacement.replace(parents, offsprings));
-			selectorP.setPopulation(pop);
+			pop = new Population<T>(replacement.replace(parents, offsprings));
 			Solution.sort(pop);
 			Solution.printStatistics(pop);
 			t++;
 		}
-		// System.out.println(pop.toString());
-
-	}
-
-	public void iterates() {
-		rnd = new Random();
-		int t = 0;
-		while (t < maxIterations) {
-			Population parents = selectorP.getParents();
-			parents.setFunction(f);
-			Population offsprings = new Population(pop.DIM);
-			offsprings.setFunction(f);
-
-			int i = 0;
-			while (i < pop.nPop()) {
-				Individual par[];
-				par = new Individual[2];
-				par[0] = parents.getIndividual(i++);
-				par[1] = parents.getIndividual(i);
-				Individual offspring[] = operators[0].getIndividuals(par);
-				offsprings.addIndividual(new RealIndividual(
-						operators[1].getIndividual((RealIndividual) offspring[0]), f));
-				offsprings.addIndividual(new RealIndividual(
-						operators[1].getIndividual((RealIndividual) offspring[1]), f));
-				i++;
-			}
-			normalizeRates();
-			pop = new Population(replacement.replace(parents, offsprings));
-			selectorP.setPopulation(pop);
-			Solution.sort(pop);
-			Solution.printStatistics(pop);
-			t++;
-		}
-		// System.out.println(pop.toString());
-
 	}
 }
+
