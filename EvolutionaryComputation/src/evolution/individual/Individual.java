@@ -1,20 +1,59 @@
 package evolution.individual;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Function.Function;
 
-public abstract class Individual<T> implements Comparable<Individual<?>>{
+public class Individual<T> implements Comparable<Individual<T>>{
+	
 	protected Double fitness;
 	protected int dimension = 0;
-	protected Gene<T> genome[];
+	protected List<T> genome;
 	protected double fit;
-	protected Function f;
+	protected Function<T> f;
+	protected Space<T> space;
 	
-	public abstract Double computeFitness();
-	public Function getFunction(){
+	public double max;
+	public double min;
+	
+	public Individual (int DIM, Function<T> f_) {
+		dimension = DIM;
+		fitness = null;
+		f = f_;
+		genome = new ArrayList<>(dimension);
+	}
+
+	public Individual (int DIM, Function<T> f_, Space<T> space_) {
+		dimension = DIM;
+		fitness = null;
+		f = f_;
+		space =space_;
+		genome = new ArrayList<>(dimension);
+		for (int i = 0; i < dimension; i++) {
+			genome.add(space.next());
+		}
+	}
+	
+	public Individual (Individual<T> ind) {
+		dimension = ind.getDimension();
+		fitness = ind.getFitness();
+		f = ind.getFunction();
+		space =ind.space;
+		genome = new ArrayList<>(dimension);
+		for (T t : ind.genome) {
+			genome.add(t);
+		}
+	}
+	
+	public Double computeFitness(){
+		fitness = f.apply(genome);
+		return fitness;
+	}
+	public Function<T> getFunction(){
 			return f;
 	}
 	
-	public abstract String toString();
 	
 	public Double getFitness(){
 		if(fitness == null){
@@ -27,15 +66,32 @@ public abstract class Individual<T> implements Comparable<Individual<?>>{
 		return dimension;
 	}
 	
-	public Gene<T>[] getGenome(){
+	public List<T> getGenome(){
 		return genome;
 	}
 	
-	public Gene<T> getGene(int index){
-		if(index >= genome.length){
+	public T getGene(int index){
+		if(index >= genome.size()){
 			return null;
 		}
-		return genome[index];
+		return genome.get(index);
+	}
+	
+	@Override
+	public  String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		for (T gene : genome) {
+			sb.append(gene.toString()+", ");
+		}
+		sb.deleteCharAt(sb.lastIndexOf(","));
+		sb.append("]");
+		return sb.toString();
+	}
+	
+	@Override
+	public int compareTo(Individual<T> ind) {
+		return fitness.compareTo(ind.getFitness());
 	}
 	
 }
