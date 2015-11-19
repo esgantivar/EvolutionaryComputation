@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import evolution.Gene;
-
 public class LSGOFunction {
 
 	private static double xopt[];
@@ -80,11 +78,4 @@ public class LSGOFunction {
 		}
 	}
 
-	public static double Schwefel(Gene X[]) {
-		double res = 418.9829 * X.length;
-		for (Gene x : X) {
-			res += -(double) x.getValue() * Math.sin(Math.sqrt(Math.abs((double) x.getValue())));
-		}
-		return res;
-	}
 }

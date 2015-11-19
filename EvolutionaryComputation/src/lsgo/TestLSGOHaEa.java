@@ -3,6 +3,7 @@ package lsgo;
 
 
 import FunctionLSGO.ShiftedEllipticFunction;
+import FunctionLSGO.f4;
 import unalcol.descriptors.Descriptors;
 import unalcol.descriptors.WriteDescriptors;
 import unalcol.evolution.haea.HAEA;
@@ -33,6 +34,7 @@ import unalcol.search.population.variation.Operator;
 import unalcol.search.selection.Tournament;
 import unalcol.search.space.Space;
 import unalcol.tracer.ConsoleTracer;
+import unalcol.tracer.FileTracer;
 import unalcol.tracer.Tracer;
 import unalcol.types.real.array.DoubleArray;
 import unalcol.types.real.array.DoubleArrayPlainWrite;
@@ -48,12 +50,12 @@ public class TestLSGOHaEa {
 	public static void real(){
 		// Search Space definition
 		int DIM = 1000;
-		double[] min = DoubleArray.create(DIM, -100);
-		double[] max = DoubleArray.create(DIM, 100);
+		double[] min = DoubleArray.create(DIM, -32);
+		double[] max = DoubleArray.create(DIM, 32);
     	Space<double[]> space = new HyperCube( min, max );    	
     	
     	// Optimization Function
-    	OptimizationFunction<double[]> function = new ShiftedEllipticFunction(DIM);
+    	OptimizationFunction<double[]> function = new f4(DIM);
     	//OptimizationFunction<double[]> function = new Schwefel();
         Goal<double[]> goal = new OptimizationGoal<double[]>(function); // minimizing, add the parameter false if maximizing   	
     	
@@ -84,7 +86,10 @@ public class TestLSGOHaEa {
 
         ConsoleTracer tracer = new ConsoleTracer();       
         //Tracer.addTracer(goal, tracer);  // Uncomment if you want to trace the function evaluations
+        FileTracer file = new FileTracer("prueba.txt"); //PAra escrubur los resultados en la ejecucion de los algoritmos
         Tracer.addTracer(search, tracer); // Uncomment if you want to trace the hill-climbing algorithm
+        Tracer.addTracer(search, file);
+        
         
         // Apply the search method
         Solution<double[]> solution = search.apply(space, goal);

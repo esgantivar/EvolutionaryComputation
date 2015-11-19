@@ -1,38 +1,23 @@
 package lsgo;
 
-import java.io.FileNotFoundException;
-import java.util.Random;
 
+import java.util.ArrayList;
+import java.util.List;
 import Function.*;
 import evolution.Algorithm;
-import geneticOperators.Crossover;
-import geneticOperators.GeneticOperator;
-import geneticOperators.UniformMutation;
-import replacements.Elitist;
-import replacements.Generational;
-import replacements.Replacement;
-import selectors.Roulette;
-import selectors.Selector;
-import util.Bencmarks;
+import evolution.individual.RealSpace;
+import evolution.individual.Space;
+import evolution.operators.LinearXOver;
+import evolution.operators.Operator;
+import evolution.operators.UniformMutation;
+import evolution.replacements.Generational;
+import evolution.replacements.Replacement;
+import evolution.selectors.Roulette;
+import evolution.selectors.Selector;
 
 public class TestLSGO {
 	
 	public static void main(String args[]){
-		GeneticOperator operators[] = new GeneticOperator[2];
-		operators[0] = new Crossover();
-		operators[1] = new UniformMutation();
-		//operators[2] = new UniformMutation();
-		Selector selector = new Roulette();
-		Replacement replacement = new Generational();
-		//Replacement replacement = new Elitist();
-		double min = -100;
-		double max = 100;
-		int DIM = 1000;
-		int nPop = 100;
-		int maxIterations = 2000;
-		
-		
-		
 		double y[] = new double[1000];
 		y[0]=-45.3980021450393;
 		y[1]=-30.3779788531999;
@@ -1035,21 +1020,20 @@ public class TestLSGO {
 		y[998]=50.3080508812872;
 		y[999]=0.367837442299788;
 
-		Function f = new ShiftedandRotatedElliptic(1000);		
-		System.out.println(f.apply(y));
-		
-		//Function f = new Schwefel();
-		//Algorithm search = new Algorithm(DIM, nPop, operators, min, max, selector, replacement, maxIterations, f);	
-		//search.iterates();
-		/*try {
-			double a[] = Bencmarks.readW(13, 20);
-			for (double i : a) {
-				System.out.println(i);
-			}
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}*/
+		double min = -100;
+		double max = 100;
+		int DIM = 1000;
+		int nPop = 100;
+		int maxIterations = 100;
+		Space<Double> space = new RealSpace(min, max, DIM);
+		Selector selector = new Roulette();
+		Replacement<Double> replacement = new Generational();
+		List<Operator<Double>> operators = new ArrayList<>();
+		operators.add(new UniformMutation());
+		operators.add(new LinearXOver());
+		Function<Double> f = new ShiftedElliptic(DIM);
+		Algorithm<Double> search = new Algorithm<>(nPop, space, selector, replacement, operators, maxIterations, f);
+		search.iterate();
 		
 		
 	}
