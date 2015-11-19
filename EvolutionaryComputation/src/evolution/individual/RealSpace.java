@@ -3,11 +3,13 @@ package evolution.individual;
 public class RealSpace extends Space<Double> {
 	private Double bound[];
 
-	public RealSpace(Double min_, Double max_) {
+	public RealSpace(Double min_, Double max_, int DIM_) {
 		bound = new Double[2];
 		bound[0] = min_;
 		bound[1] = max_;
+		DIM = DIM_;
 	}
+	
 
 	@Override
 	public Double[] getBoundaries() {
@@ -33,5 +35,4 @@ public class RealSpace extends Space<Double> {
 	public Double next() {
 		return (Math.random() * (limitHigh() - limitLow())) + limitLow();
 	}
-
 }
