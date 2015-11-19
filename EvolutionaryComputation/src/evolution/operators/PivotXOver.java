@@ -1,35 +1,43 @@
 package evolution.operators;
 
-import evolution.individual.RealIndividual;
+import java.util.ArrayList;
+import java.util.List;
+import evolution.individual.Individual;
 
-public class PivotXOver extends GeneticOperator<RealIndividual, RealIndividual>{
+public class PivotXOver extends GeneticOperator<Double>{
 
 	public PivotXOver() {
-		arity = 1;
 	}
+	
 	@Override
-	public RealIndividual[] getIndividuals(RealIndividual[] parents) {
-		int pivot = (int)(Math.random()*parents[0].getDimension());
-		RealIndividual offsprings[] = new RealIndividual[2];
-		double temp1[] = new double[parents[0].getDimension()];
-		double temp2[] = new double[parents[0].getDimension()];
+	public int arity(){
+		return 2;
+	}
+
+	@Override
+	public List<Individual<Double>> getIndividuals(List<Individual<Double>> parents) {
+		int pivot = (int)(Math.random()*parents.get(0).getDimension());
+		int dim = parents.get(0).getDimension();
+		List<Individual<Double>> offsprings = new ArrayList<>(2);
+		Double temp1[] = new Double[dim];
+		Double temp2[] = new Double[dim];
 
 		for (int i = 0; i < pivot; i++) {
-			temp1[i] = (double) parents[0].getGene(i).getValue();
-			temp2[i] = (double) parents[1].getGene(i).getValue();
+			temp1[i] = (double) parents.get(0).getGene(i);
+			temp2[i] = (double) parents.get(1).getGene(i);
 		}
 
-		for (int i = pivot; i < parents[0].getDimension(); i++) {
-			temp1[i] = (double) parents[1].getGene(i).getValue();
-			temp2[i] = (double) parents[0].getGene(i).getValue();
+		for (int i = pivot; i < dim; i++) {
+			temp1[i] = (double) parents.get(1).getGene(i);
+			temp2[i] = (double) parents.get(0).getGene(i);
 		}
-		offsprings[0] = new RealIndividual(temp1,parents[0].getFunction());
-		offsprings[1] = new RealIndividual(temp2,parents[0].getFunction());
+		offsprings.add(new Individual<Double>(parents.get(0).getFunction(),temp1));
+		offsprings.add(new Individual<Double>(parents.get(0).getFunction(),temp2));
 		return offsprings;
 	}
 
 	@Override
-	public RealIndividual getIndividual(RealIndividual ind) {
+	public Individual<Double> getIndividual(Individual<Double> ind) {
 		return ind;
 	}
 

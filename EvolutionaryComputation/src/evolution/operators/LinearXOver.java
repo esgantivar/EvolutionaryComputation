@@ -1,29 +1,38 @@
 package evolution.operators;
 
-import evolution.individual.RealIndividual;
+import java.util.ArrayList;
+import java.util.List;
 
-public class LinearXOver extends GeneticOperator<RealIndividual, RealIndividual> {
+import evolution.individual.Individual;
+
+public class LinearXOver extends GeneticOperator<Double> {
+
+	public LinearXOver() {
+	}
 
 	@Override
-	public RealIndividual[] getIndividuals(RealIndividual[] parents) {
-		RealIndividual offsprings[] = new RealIndividual[2];
+	public int arity() {
+		return 2;
+	}
+
+	@Override
+	public List<Individual<Double>> getIndividuals(List<Individual<Double>> parents) {
+		List<Individual<Double>> offsprings = new ArrayList<>(2);
 		double s;
-		double temps[][] = new double[2][parents[0].getDimension()];
-		
-		for (int i = 0; i < parents[0].getDimension(); i++) {
+		Double temps[][] = new Double[2][parents.get(0).getDimension()];
+
+		for (int i = 0; i < parents.get(0).getDimension(); i++) {
 			s = Math.random();
-			temps[0][i] = (s * parents[0].getGene(i).getValue()) + ((s - 1) * parents[1].getGene(i).getValue());
-			temps[1][i] = ((s - 1) * parents[0].getGene(i).getValue()) + (s * parents[1].getGene(i).getValue());
+			temps[0][i] = (s * parents.get(0).getGene(i)) + ((s - 1) * parents.get(1).getGene(i));
+			temps[1][i] = ((s - 1) * parents.get(0).getGene(i)) + (s * parents.get(1).getGene(i));
 		}
-		
-		for (int i = 0; i < offsprings.length; i++) {
-			offsprings[i] = new RealIndividual(temps[i],parents[0].getFunction());
-		}
+		offsprings.add(new Individual<Double>(parents.get(0).getFunction(), temps[0]));
+		offsprings.add(new Individual<Double>(parents.get(0).getFunction(), temps[1]));
 		return offsprings;
 	}
 
 	@Override
-	public RealIndividual getIndividual(RealIndividual ind) {
+	public Individual<Double> getIndividual(Individual<Double> ind) {
 		return ind;
 	}
 

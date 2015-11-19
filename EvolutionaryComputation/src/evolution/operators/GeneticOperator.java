@@ -1,7 +1,13 @@
 package evolution.operators;
 
-public abstract class GeneticOperator<O,I> {
-	public int arity ;
+import java.util.List;
+import evolution.individual.Individual;
+
+public abstract class GeneticOperator<T> {
+	
+	public int arity(){
+		return 0;
+	}
 	protected double rate = 0.0;
 	public void setRate(double rate_){
 		rate = rate_;
@@ -9,7 +15,6 @@ public abstract class GeneticOperator<O,I> {
 	public double getRate(){
 		return rate;
 	}
-	
-	public abstract O[] getIndividuals(I parents[]);
-	public abstract O getIndividual(I ind);
+	public abstract List<Individual<T>> getIndividuals(List<Individual<T>> parents);
+	public abstract Individual<T> getIndividual(Individual<T> ind);	
 }

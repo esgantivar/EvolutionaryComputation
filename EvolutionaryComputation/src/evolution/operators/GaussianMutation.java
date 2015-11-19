@@ -1,16 +1,26 @@
 package evolution.operators;
 
-import evolution.individual.RealIndividual;
+import java.util.List;
 
-public class GaussianMutation  extends GeneticOperator<RealIndividual,RealIndividual>{
+import evolution.individual.Individual;
 
+public class GaussianMutation  extends GeneticOperator<Double>{
+
+	public GaussianMutation() {}
+	
 	@Override
-	public RealIndividual[] getIndividuals(RealIndividual[] parents) {
-		return null;
+	public int arity(){
+		return 1;
 	}
 
 	@Override
-	public RealIndividual getIndividual(RealIndividual ind) {
+	public List<Individual<Double>> getIndividuals(List<Individual<Double>> parents) {
+		return parents;
+	}
+
+	@Override
+	public Individual<Double> getIndividual(Individual<Double> ind) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	

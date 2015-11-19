@@ -1,33 +1,41 @@
 package evolution.operators;
 
-import evolution.individual.RealIndividual;
+import java.util.ArrayList;
+import java.util.List;
 
-public class AllXOver extends GeneticOperator<RealIndividual, RealIndividual>{
+import evolution.individual.Individual;
 
+public class AllXOver extends GeneticOperator<Double>{
+
+	public AllXOver() {}
+	
 	@Override
-	public RealIndividual[] getIndividuals(RealIndividual[] parents) {
-		int dim = parents[0].getDimension();
-		RealIndividual offsprings[] = new RealIndividual[2];
-
-		double temp1[] = new double[parents[0].getDimension()];
-		double temp2[] = new double[parents[0].getDimension()];
-
+	public int arity(){
+		return 2;
+	}
+	
+	@Override
+	public List<Individual<Double>> getIndividuals(List<Individual<Double>> parents) {
+		int dim = parents.get(0).getDimension();
+		Double temp1[] = new Double[dim];
+		Double temp2[] = new Double[dim];
 		for (int i = 0; i < dim; i++) {
 			if (Math.random() < 0.5) {
-				temp1[i] = (double) parents[0].getGene(i).getValue();
-				temp2[i] = (double) parents[1].getGene(i).getValue();
+				temp1[i] = parents.get(0).getGene(i);
+				temp2[i] = parents.get(1).getGene(i);
 			} else {
-				temp1[i] = (double) parents[1].getGene(i).getValue();
-				temp2[i] = (double) parents[0].getGene(i).getValue();
+				temp1[i] = parents.get(1).getGene(i);
+				temp2[i] = parents.get(0).getGene(i);
 			}
 		}
-		offsprings[0] = new RealIndividual(temp1,parents[0].getFunction());
-		offsprings[1] = new RealIndividual(temp2,parents[0].getFunction());
+		ArrayList<Individual<Double>> offsprings = new ArrayList<>(2);
+		offsprings.add(new Individual<Double>(parents.get(0).getFunction(), temp1));
+		offsprings.add(new Individual<Double>(parents.get(0).getFunction(), temp2));
 		return offsprings;
 	}
 
 	@Override
-	public RealIndividual getIndividual(RealIndividual ind) {
+	public Individual<Double> getIndividual(Individual<Double> ind) {
 		return ind;
 	}
 
