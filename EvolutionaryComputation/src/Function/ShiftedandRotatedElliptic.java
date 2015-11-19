@@ -1,11 +1,12 @@
 package Function;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 
-import util.Bencmarks;
+import evolution.util.Bencmarks;
 
 @SuppressWarnings("unused")
-public class ShiftedandRotatedElliptic implements Function {
+public class ShiftedandRotatedElliptic implements Function<Double> {
 
 	private double Ovector[];
 	private int Pvector[];
@@ -38,7 +39,7 @@ public class ShiftedandRotatedElliptic implements Function {
 	}
 
 	@Override
-	public Double apply(double[] x) {
+	public Double apply(List<Double> x) {
 		double result = 0.0;
 
 		if (Ovector == null) {
@@ -56,7 +57,7 @@ public class ShiftedandRotatedElliptic implements Function {
 		}
 
 		for (int i = 0; i < DIM; i++) {
-			anotherz[i] = x[i] - Ovector[i];
+			anotherz[i] = x.get(i) - Ovector[i];
 		}
 		double anotherz1[];
 		int c = 0;

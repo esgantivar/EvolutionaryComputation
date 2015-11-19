@@ -1,11 +1,12 @@
 package Function;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 
-import util.Bencmarks;
+import evolution.util.Bencmarks;
 
 @SuppressWarnings("unused")
-public class ShiftedAckleys implements Function {
+public class ShiftedAckleys implements Function<Double> {
 	private double[] Ovector;
 	private int minX;	
 	private int maxX;
@@ -23,7 +24,7 @@ public class ShiftedAckleys implements Function {
 	}
 
 	@Override
-	public Double apply(double[] x) {
+	public Double apply(List<Double> x) {
 
 		if (Ovector == null) {
 			try {
@@ -34,7 +35,7 @@ public class ShiftedAckleys implements Function {
 		}
 
 		for (int i = DIM - 1; i >= 0; i--) {
-			anotherz[i] = x[i] - Ovector[i];
+			anotherz[i] = x.get(i) - Ovector[i];
 		}
 		return Bencmarks.ackley(anotherz, DIM);
 	}

@@ -1,11 +1,12 @@
 package Function;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 
-import util.Bencmarks;
+import evolution.util.Bencmarks;
 
 @SuppressWarnings("unused")
-public class ShiftedRastrigins implements Function {
+public class ShiftedRastrigins implements Function<Double> {
 	private double Ovector[];
 	private int minX;
 	private int maxX;
@@ -23,7 +24,7 @@ public class ShiftedRastrigins implements Function {
 	}
 
 	@Override
-	public Double apply(double[] x) {
+	public Double apply(List<Double> x) {
 		if (Ovector == null) {
 			try {
 				Ovector = Bencmarks.readOvector(ID,DIM);
@@ -33,7 +34,7 @@ public class ShiftedRastrigins implements Function {
 		}
 
 		for (int i = 0; i < DIM; i++) {
-			anotherz[i] = x[i] - Ovector[i];
+			anotherz[i] = x.get(i) - Ovector[i];
 		}
 		return Bencmarks.rastrigin(anotherz, DIM);
 	}

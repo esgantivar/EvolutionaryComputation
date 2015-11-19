@@ -1,10 +1,12 @@
 package Function;
 
 import java.io.FileNotFoundException;
-import util.Bencmarks;
+import java.util.List;
+
+import evolution.util.Bencmarks;
 
 @SuppressWarnings("unused")
-public class ShiftedElliptic implements Function {
+public class ShiftedElliptic implements Function<Double> {
 
 	private double[] Ovector;
 	private int minX;
@@ -23,7 +25,7 @@ public class ShiftedElliptic implements Function {
 	}
 
 	@Override
-	public Double apply(double[] x) {
+	public Double apply(List<Double> x) {
 		if (Ovector == null) {
 			try {
 				Ovector = Bencmarks.readOvector(ID, DIM);
@@ -33,7 +35,7 @@ public class ShiftedElliptic implements Function {
 		}
 
 		for (int i = DIM - 1; i >= 0; i--) {
-			anotherz[i] = x[i] - Ovector[i];
+			anotherz[i] = x.get(i) - Ovector[i];
 		}
 
 		return Bencmarks.elliptic(anotherz, DIM);

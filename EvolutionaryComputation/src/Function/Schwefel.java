@@ -1,23 +1,14 @@
 package Function;
 
-import evolution.Gene;
+import java.util.List;
 
-public class Schwefel implements Function{
-
-	public double evaluate(Gene X[]) {
-		double res = 418.9829 * X.length;
-		for (Gene x : X) {
-			res += -(double) x.getValue() * Math.sin(Math.sqrt(Math.abs((double) x.getValue())));
-		}
-		return res;
-	}
+public class Schwefel implements Function<Double>{
 	@Override
-	public Double apply(double[] x) {
-		double res = 418.9829 * x.length;
+	public Double apply(List<Double> x) {
+		double res = 418.9829 * x.size();
 		for (double t : x) {
 			res += - t * Math.sin(Math.sqrt(Math.abs( t)));
 		}
 		return res;
 	}
-
 }
