@@ -6,7 +6,7 @@ import evolution.Population;
 public class Roulette implements Selector{
 	
 	private double tickets[];
-	private Population pop;
+	private Population<?> pop;
 	
 	public void setPopulation(Population pop_) {
 		pop = pop_;
@@ -69,7 +69,7 @@ public class Roulette implements Selector{
 
 	@Override
 	public Population getParents() {
-		Population parents = new Population(pop.DIM);
+		Population parents = new Population(pop.popSize);
 		recalcTickets();
 		for (int i = 0; i < pop.nPop(); i++) {
 			parents.addIndividual(pop.getIndividual(getTicket()));
