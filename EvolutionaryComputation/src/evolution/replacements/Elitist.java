@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import evolution.Population;
 import evolution.individual.Individual;
-import util.Solution;
+import evolution.util.Solution;
 
 public class Elitist implements Replacement<Double>{
 
 	@Override
 	public Population<Double> replace(Population<Double> parents, Population<Double> offsprings) {
-		Population<Double> p = new Population<Double>(parents.DIM);
+		Population<Double> p = new Population<Double>(parents.popSize);
 		parents.fitnessAll();
 		offsprings.fitnessAll();
 		p.setFunction(parents.getF());
@@ -29,7 +29,6 @@ public class Elitist implements Replacement<Double>{
 		for(Individual<Double> ind: p.getIndividuals().subList(0, (int)p.getIndividuals().size()/2)){
 			inds.add(ind);
 		}
-		return new Population<Double>(parents.DIM,parents.getF(),inds);
+		return new Population<Double>(parents.popSize,parents.getF(),inds);
 	}
-
 }
