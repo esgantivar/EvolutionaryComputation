@@ -46,6 +46,15 @@ public class Individual<T> implements Comparable<Individual<T>>{
 		}
 	}
 	
+	public Individual (Function<T> f_, T values[]){
+		dimension = values.length;
+		f = f_;
+		genome = new ArrayList<>(dimension);
+		for (T t : values) {
+			genome.add(t);
+		}
+	}
+	
 	public Double computeFitness(){
 		fitness = f.apply(genome);
 		return fitness;
@@ -75,6 +84,10 @@ public class Individual<T> implements Comparable<Individual<T>>{
 			return null;
 		}
 		return genome.get(index);
+	}
+	
+	public void setGene(int index,T value){
+		genome.set(index, value);
 	}
 	
 	@Override
