@@ -5,7 +5,7 @@ import java.util.List;
 
 import evolution.individual.Individual;
 
-public class LinearXOver extends GeneticOperator<Double> {
+public class LinearXOver extends Operator<Double> {
 
 	public LinearXOver() {
 	}

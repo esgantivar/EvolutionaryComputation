@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import evolution.individual.Individual;
 
-public class PivotXOver extends GeneticOperator<Double>{
+public class PivotXOver extends Operator<Double>{
 
 	public PivotXOver() {
 	}

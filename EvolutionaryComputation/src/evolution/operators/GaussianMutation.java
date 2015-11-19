@@ -4,7 +4,7 @@ import java.util.List;
 
 import evolution.individual.Individual;
 
-public class GaussianMutation  extends GeneticOperator<Double>{
+public class GaussianMutation  extends Operator<Double>{
 
 	public GaussianMutation() {}
 	
