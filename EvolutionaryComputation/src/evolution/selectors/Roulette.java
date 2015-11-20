@@ -69,9 +69,9 @@ public class Roulette implements Selector{
 
 	@Override
 	public Population getParents() {
-		Population parents = new Population(pop.popSize);
+		Population parents = new Population(pop.popSize());
 		recalcTickets();
-		for (int i = 0; i < pop.nPop(); i++) {
+		for (int i = 0; i < pop.popSize(); i++) {
 			parents.addIndividual(pop.getIndividual(getTicket()));
 		}
 		return parents;
