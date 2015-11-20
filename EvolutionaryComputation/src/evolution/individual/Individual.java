@@ -2,7 +2,6 @@ package evolution.individual;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import Function.Function;
 
 public class Individual<T> implements Comparable<Individual<T>>{
@@ -13,19 +12,20 @@ public class Individual<T> implements Comparable<Individual<T>>{
 	protected double fit;
 	protected Function<T> f;
 	protected Space<T> space;
+	protected Double[] rates;
 	
-	public double max;
-	public double min;
-	
-	public Individual (int DIM, Function<T> f_) {
+	public Individual (int DIM, Function<T> f_, int nOperator) {
 		dimension = DIM;
 		fitness = null;
 		f = f_;
+		rates = new Double[nOperator];
 		genome = new ArrayList<>(dimension);
+		initilializeRates();
 	}
 
-	public Individual (int DIM, Function<T> f_, Space<T> space_) {
+	public Individual (int DIM, Function<T> f_, Space<T> space_, int nOperator) {
 		dimension = DIM;
+		rates = new Double[nOperator];
 		fitness = null;
 		f = f_;
 		space =space_;
@@ -33,10 +33,12 @@ public class Individual<T> implements Comparable<Individual<T>>{
 		for (int i = 0; i < dimension; i++) {
 			genome.add(space.next());
 		}
+		initilializeRates();
 	}
 	
 	public Individual (Individual<T> ind) {
 		dimension = ind.getDimension();
+		rates = ind.rates.clone();
 		fitness = ind.getFitness();
 		f = ind.getFunction();
 		space =ind.space;
@@ -59,10 +61,10 @@ public class Individual<T> implements Comparable<Individual<T>>{
 		fitness = f.apply(genome);
 		return fitness;
 	}
+	
 	public Function<T> getFunction(){
 			return f;
 	}
-	
 	
 	public Double getFitness(){
 		if(fitness == null){
@@ -90,6 +92,33 @@ public class Individual<T> implements Comparable<Individual<T>>{
 		genome.set(index, value);
 	}
 	
+	private void initilializeRates(){
+		for (int i = 0; i < rates.length; i++) {
+			rates[i]=Math.random();
+		}
+		normalizeRates();
+	}
+	
+	public void normalizeRates(){
+		Double total = 0.0;
+		for (int i = 0; i < rates.length; i++) {
+			total += rates[i];
+		}
+		
+		for (int i = 0; i < rates.length; i++) {
+			rates[i] = rates[i]/total;
+		}
+	}
+	
+	public Double[] getRates(){
+		return rates;
+	}
+	
+	public void setRates(Double rates_[]){
+		rates = rates_.clone();
+		normalizeRates();
+	}
+	
 	@Override
 	public  String toString(){
 		StringBuilder sb = new StringBuilder();
@@ -102,9 +131,11 @@ public class Individual<T> implements Comparable<Individual<T>>{
 		return sb.toString();
 	}
 	
+	
 	@Override
 	public int compareTo(Individual<T> ind) {
-		return fitness.compareTo(ind.getFitness());
+		return this.getFitness().compareTo(ind.getFitness());
 	}
+	
 	
 }
