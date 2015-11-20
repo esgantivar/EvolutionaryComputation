@@ -12,6 +12,7 @@ public class Solution {
 	}
 
 	public static void printStatistics(Population<?> pop) {
+		Double rates[] = pop.getIndividual(0).getRates();
 		double best = pop.getIndividual(0).getFitness();
 		double worst = pop.getIndividual(pop.getIndividuals().size()-1).getFitness();
 		double total = 0.0;
@@ -26,8 +27,11 @@ public class Solution {
 		}
 		stdev /= (pop.getIndividuals().size() - 1);
 		stdev = Math.sqrt(stdev);
-		
-		System.out.println(best+";"+median+";"+worst+";"+mean+";"+stdev);
+		StringBuilder sb = new StringBuilder();
+		for (Double rate : rates) {
+			sb.append(rate + ";");
+		}
+		System.out.println(best+";"+median+";"+worst+";"+mean+";"+stdev+";"+sb.toString());
 	}
 
 }
