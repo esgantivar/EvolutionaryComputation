@@ -16,6 +16,9 @@ public class Factory {
 		case "f10": return new ShiftedandRotatedAckleysXX(DIM);
 		case "f11": return new ShiftedSchwefelsXX(DIM);
 		case "f12": return new ShiftedRosenbrocks(DIM);
+		case "f13": return new ShiftedSchwefelsConformingOverlapping(DIM);
+		case "f14": return new ShiftedSchwefelsConflictingOverlapping(DIM);
+		case "f15": return new ShiftedSchwefels(DIM);
 		default: return new ShiftedElliptic(DIM);
 		}
 	}
