@@ -8,41 +8,44 @@ import evolution.individual.Individual;
 import evolution.individual.Space;
 
 public class Population<T> {
-	public int popSize;
+	public int pSize;
 	private double fitnessAll[];
 	private Function<T> f;
 	private Space<T> space;
-
 	private ArrayList<Individual<T>> population;
 
-	public Population(int popSize_, int nPopulation, Space<T> space_, Function<T> f_) {
-		popSize = popSize_;
+	public Population(int popSize_, int nPopulation, Space<T> space_, Function<T> f_, int nOperators) {
+		pSize = popSize_;
 		f = f_;
 		space = space_;
 		population = new ArrayList<>();
 		for (int i = 0; i < nPopulation; i++) {
-			population.add(new Individual<T>(popSize, f,space));
+			population.add(new Individual<T>(pSize, f, space, nOperators));
 		}
 	}
-	
-	public Function<T> getF(){
-		return f;
-	}
-	
-	public Population(int DIM_,Function<T> f_,ArrayList<Individual<T>> inds){
+
+	public Population(int DIM_, Function<T> f_, ArrayList<Individual<T>> inds) {
 		population = new ArrayList<>(inds);
-		popSize = DIM_;
+		pSize = DIM_;
 		f = f_;
 	}
-	
-	public Population(Population<T> pop){
-		population = new ArrayList<>(pop.population);
+
+	public Population(Population<T> pop) {
+		population = new ArrayList<>(pop.popSize());
+		for (Individual<T> ind : pop.getIndividuals()) {
+			population.add(new Individual<>(ind));
+		}
+		
 		f = pop.f;
-		popSize = pop.popSize;
+		pSize = pop.pSize;
 		fitnessAll();
 	}
 
-	public int nPop() {
+	public Function<T> getF() {
+		return f;
+	}
+
+	public int popSize() {
 		return population.size();
 	}
 
@@ -51,18 +54,28 @@ public class Population<T> {
 	}
 
 	public Population(int popSize_) {
-		popSize= popSize_;
+		pSize = popSize_;
 		population = new ArrayList<>();
 	}
 
 	public void addIndividual(Individual<T> ind) {
 		population.add(new Individual<T>(ind));
 	}
-	
-	public void addIndividuals(List<Individual<T>> inds){
+
+	public void addIndividuals(List<Individual<T>> inds) {
 		for (Individual<T> ind : inds) {
 			population.add(ind);
 		}
+	}
+
+	public Individual<T> remove(int index) {
+		if (index < population.size()) {
+			return population.remove(index);
+		} else {
+			return null;
+
+		}
+
 	}
 
 	public Individual<T> getIndividual(int index) {
@@ -85,8 +98,8 @@ public class Population<T> {
 			return population.get(index).computeFitness();
 		}
 	}
-	
-	public List<Individual<T>> getIndividuals(){
+
+	public List<Individual<T>> getIndividuals() {
 		return population;
 	}
 
@@ -94,7 +107,7 @@ public class Population<T> {
 	public String toString() {
 		StringBuilder s = new StringBuilder();
 		for (double d : fitnessAll) {
-			s.append(d + "\n") ;
+			s.append(d + "\n");
 		}
 		return s.toString();
 	}
