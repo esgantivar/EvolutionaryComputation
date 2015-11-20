@@ -3,8 +3,6 @@ package Function;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import evolution.util.Bencmarks;
-
 @SuppressWarnings("unused")
 public class ShiftedRastrigins implements Function<Double> {
 	private double Ovector[];
