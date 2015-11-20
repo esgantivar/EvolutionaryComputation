@@ -7,10 +7,16 @@ public class Factory {
 		case "f1": return new ShiftedElliptic(DIM);
 		case "f2": return new ShiftedRastrigins(DIM);
 		case "f3": return new ShiftedAckleys(DIM);
-		case "f4": return new ShiftedandRotatedElliptic(DIM);
-		case "f5": return new ShiftedandRotatedRastrigins(DIM);
+		case "f4": return new ShiftedandRotatedEllipticVII(DIM);
+		case "f5": return new ShiftedandRotatedRastriginsVII(DIM);
+		case "f6": return new ShiftedandRotatedAckleysVII(DIM);
+		case "f7": return new ShiftedSchwefelsVII(DIM);
+		case "f8": return new ShiftedandRotatedEllipticXX(DIM);
+		case "f9": return new ShiftedandRotatedRastriginsXX(DIM);
+		case "f10": return new ShiftedandRotatedAckleysXX(DIM);
+		case "f11": return new ShiftedSchwefelsXX(DIM);
+		case "f12": return new ShiftedRosenbrocks(DIM);
 		default: return new ShiftedElliptic(DIM);
 		}
 	}
-
 }

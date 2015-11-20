@@ -1,4 +1,4 @@
-	package Function;
+package Function;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -37,16 +37,6 @@ public class Bencmarks {
 		return sum;
 	}
 
-	// rastrigin function for F9 ~
-	/*
-	 * public static double rastrigin(double x[], int dim, int k) { double
-	 * result=0.0;
-	 * 
-	 * for(int i=dim/k-1;i>=0;i--) {
-	 * result+=x[Pvector[dim/k+i]]*x[Pvector[dim/k+i]]-10.0*cos(2*PI*x[Pvector[
-	 * dim/k+i]])+10.0; } return result; }
-	 */
-
 	// ackley function for single group non-separable
 	public static double ackley(double x[], int dim) {
 		double sum1 = 0.0;
@@ -72,19 +62,19 @@ public class Bencmarks {
 		return sum;
 	}
 
-	// ackley function for m-group non-separable
-
-	// public static double ackley(double x[], int dim, int k) { double
-	// sum1=0.0; double sum2=0.0; double result=0.0; int i;
-	// int Pvector[] = new int[dim];
-	// readPermVector(id, dim);
-	// for(i=dim/k-1;i>=0;i--) { sum1+=x[Pvector[dim/k+i]]*x[Pvector[dim/k+i]];
-	// sum2+=cos(2.0*PI*x[Pvector[dim/k+i]]); }
-	//
-	// result=-20.0*Math.exp(-0.2*Math.sqrt(sum1/(dim/k)))-Math.exp(sum2/(dim/k)
-	// )+20.0+Math.E;
-
-	// return(result); }
+	// ackley function for m-group non-separable 
+	double ackley(double x[], int dim, int k, int Pvector[]) {
+		double sum1 = 0.0;
+		double sum2 = 0.0;
+		double result = 0.0;
+		int i;
+		for (i = dim / k - 1; i >= 0; i--) {
+			sum1 += x[Pvector[dim / k + i]] * x[Pvector[dim / k + i]];
+			sum2 += Math.cos(2.0 * Math.PI * x[Pvector[dim / k + i]]);
+		}
+		result = -20.0 * Math.exp(-0.2 * Math.sqrt(sum1 / (dim / k))) - Math.exp(sum2 / (dim / k)) + 20.0 + Math.E;
+		return (result);
+	}
 
 	public static int sign(double x) {
 		if (x > 0)
@@ -312,4 +302,75 @@ public class Bencmarks {
 		return result;
 	}
 
+	// for single group non-separable function
+	public static double schwefel(double[] x, int dim) {
+		int j;
+		double s1 = 0;
+		double s2 = 0;
+		x = transform_osz(x, dim);
+		x = transform_asy(x, 0.2, dim);
+		for (j = 0; j < dim; j++) {
+			s1 += x[j];
+			s2 += (s1 * s1);
+		}
+		return s2;
+	}
+
+	// for m groups non-separable function
+	double schwefel(double x[], int dim, int k, int Pvector[]) {
+		double sum1 = 0.0;
+		double sum2 = 0.0;
+		int i;
+		for (i = 0; i < dim; i++) {
+			sum1 += x[Pvector[(k - 1) * dim + i]];
+			sum2 += sum1 * sum1;
+		}
+		return sum2;
+	}
+
+	// for single group non-separable function
+	public static double sphere(double[] x, int dim) {
+		double sum = 0;
+		int i;
+		for (i = dim - 1; i >= 0; i--) {
+			sum += Math.pow(x[i], 2);
+		}
+		return sum;
+	}
+
+	// for m groups non-separable function
+	double sphere(double x[], int dim, int k, int Pvector[]) {
+		double result = 0.0;
+		int i;
+		for (i = dim / k - 1; i >= 0; i--) {
+			result += x[Pvector[dim / k + i]] * x[Pvector[dim / k + i]];
+		}
+
+		return (result);
+	}
+
+	// single group non-separable function
+	public static double rosenbrock(double[] x, int dim) {
+		double s = 0.0;
+		for (int i = 0; i < dim - 1; i++) {
+			s += ((100 * (Math.pow(Math.pow(x[i], 2) - x[i + 1], 2))) + Math.pow(x[i] - 1, 2));
+		}
+		return s;
+	}
+
+	// m groups non-separable function
+	double rosenbrock(double x[], int dim, int k, int Pvector[]) {
+		int j;
+		double oz, t;
+		double result = 0.0;
+		j = dim - 1;
+		for (--j; j >= 0; j--) {
+			oz = x[Pvector[(k - 1) * dim + j + 1]];
+			t = ((x[Pvector[(k - 1) * dim + j]] * x[Pvector[(k - 1) * dim + j]]) - oz);
+			result += (100.0 * t * t);
+			t = (x[Pvector[(k - 1) * dim + j]] - 1.0);
+			result += (t * t);
+		}
+		return result;
+	}
 }

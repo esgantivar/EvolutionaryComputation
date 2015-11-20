@@ -2,9 +2,8 @@ package Function;
 
 import java.io.FileNotFoundException;
 import java.util.List;
-
 @SuppressWarnings("unused")
-public class ShiftedandRotatedElliptic implements Function<Double> {
+public class ShiftedandRotatedRastriginsXX implements Function<Double> {
 
 	private double Ovector[];
 	private int Pvector[];
@@ -20,7 +19,7 @@ public class ShiftedandRotatedElliptic implements Function<Double> {
 	private int DIM;
 	private double anotherz[];
 
-	public ShiftedandRotatedElliptic(int dimension) {
+	public ShiftedandRotatedRastriginsXX(int dimension) {
 		Ovector = null;
 		Pvector = null;
 		r25 = null;
@@ -30,14 +29,16 @@ public class ShiftedandRotatedElliptic implements Function<Double> {
 		w = null;
 		minX = -100;
 		maxX = 100;
-		ID = 4;
-		s_size = 7;
+		ID = 9;
+		s_size = 20;
 		DIM = dimension;
 		anotherz = new double[dimension];
 	}
 
 	@Override
 	public Double apply(List<Double> x) {
+
+		int i;
 		double result = 0.0;
 
 		if (Ovector == null) {
@@ -54,24 +55,17 @@ public class ShiftedandRotatedElliptic implements Function<Double> {
 			}
 		}
 
-		for (int i = 0; i < DIM; i++) {
+		for (i = 0; i < DIM; i++) {
 			anotherz[i] = x.get(i) - Ovector[i];
 		}
-		double anotherz1[];
+
+		// s_size non-separable part with rotation
 		int c = 0;
-		
-		for (int i = 0; i < s_size; i++) {
+		double anotherz1[];
+		for (i = 0; i < s_size; i++) {
 			anotherz1 = Bencmarks.rotateVector(i, c, s, Pvector, anotherz, r25, r50, r100);
-			c = c + s[i];
-			result += w[i] * Bencmarks.elliptic(anotherz1, s[i]);
+			result += w[i] * Bencmarks.rastrigin(anotherz1, s[i]);
 		}
-		
-		double z[] = new double[DIM - c];
-		
-		for (int i = c ; i < DIM; i++) {
-			z[i - c] = anotherz[Pvector[i]];
-		}
-		result += Bencmarks.elliptic(z, DIM - c);
 		return result;
 	}
 
