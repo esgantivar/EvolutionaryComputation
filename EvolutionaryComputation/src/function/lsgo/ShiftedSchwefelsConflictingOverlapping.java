@@ -1,12 +1,12 @@
-package Function;
+package function.lsgo;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import function.Function;
 @SuppressWarnings("unused")
-public class ShiftedandRotatedAckleysVII implements Function<Double> {
-
-	private double Ovector[];
+public class ShiftedSchwefelsConflictingOverlapping implements Function<Double> {
+	private double OvectorVec[][];
 	private int Pvector[];
 	private double r25[][];
 	private double r50[][];
@@ -18,22 +18,22 @@ public class ShiftedandRotatedAckleysVII implements Function<Double> {
 	private int ID;
 	private int s_size;
 	private int DIM;
-	private double anotherz[];
+	private int overlap;
 
-	public ShiftedandRotatedAckleysVII(int dimension) {
-		Ovector = null;
-		Pvector = null;
+	public ShiftedSchwefelsConflictingOverlapping(int dimension) {
+		OvectorVec = null;	
+		DIM = 905;
 		r25 = null;
 		r50 = null;
 		r100 = null;
 		s = null;
 		w = null;
-		minX = -32;
-		maxX = 32;
-		ID = 6;
-		s_size = 7;
-		DIM = dimension;
-		anotherz = new double[dimension];
+		minX = -100;
+		maxX = 100;
+		ID = 14;
+		s_size = 20;
+		DIM = 905;
+		overlap = 5;
 	}
 
 	@Override
@@ -41,39 +41,32 @@ public class ShiftedandRotatedAckleysVII implements Function<Double> {
 		int i;
 		double result = 0.0;
 
-		if (Ovector == null) {
+		if (OvectorVec == null) {
 			try {
-				Ovector = Bencmarks.readOvector(ID, DIM);
 				Pvector = Bencmarks.readPermVector(ID, DIM);
 				r25 = Bencmarks.readR(ID, 25);
 				r50 = Bencmarks.readR(ID, 50);
 				r100 = Bencmarks.readR(ID, 100);
 				s = Bencmarks.readS(ID, s_size);
 				w = Bencmarks.readW(ID, s_size);
+				OvectorVec = Bencmarks.readOvectorVec(ID,s_size,s);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
 
-		for (i = 0; i < DIM; i++) {
-			anotherz[i] = x.get(i) - Ovector[i];
-		}
-
 		// s_size non-separable part with rotation
-		double anotherz1[];
 		int c = 0;
+		double anotherz1[];
+		double a[] = new double[x.size()];
+		for (int j = 0; j < a.length; j++) {
+			a[j] = x.get(j);
+		}
 		for (i = 0; i < s_size; i++) {
-			anotherz1 = Bencmarks.rotateVector(i, c, s, Pvector, anotherz, r25, r50, r100);
-			result += w[i] * Bencmarks.ackley(anotherz1, s[i]);
+			anotherz1 = Bencmarks.rotateVectorConflict(i, c, a, overlap, s, Pvector, OvectorVec, r25, r50, r100);
+			result += w[i] * Bencmarks.schwefel(anotherz1, s[i]);
+			c = c + s[i];
 		}
-
-		// one separable part without rotation
-		double z[] = new double[DIM - c];
-		for (i = c; i < DIM; i++) {
-			z[i - c] = anotherz[Pvector[i]];
-		}
-		result += Bencmarks.ackley(z, DIM - c);
 		return result;
 	}
-
 }

@@ -1,4 +1,4 @@
-package Function;
+package function.lsgo;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -425,6 +425,26 @@ public class Bencmarks {
 			System.out.println("out of range");
 		}
 
+		return anotherz1;
+	}
+
+	public static double[] rotateVectorConform(int i, int c, int overlap, int s[], int Pvector[], double anotherz[],
+			double r25[][], double r50[][], double r100[][]) {
+		double z[] = new double[s[i]];
+		double anotherz1[] = null;
+
+		for (int j = c - i * overlap; j < c + s[i] - i * overlap; ++j) {
+			z[j - (c - i * overlap)] = anotherz[Pvector[j]];
+		}
+		if (s[i] == 25) {
+			anotherz1 = multiply(z, r25, s[i]);
+		} else if (s[i] == 50) {
+			anotherz1 = multiply(z, r50, s[i]);
+		} else if (s[i] == 100) {
+			anotherz1 = multiply(z, r100, s[i]);
+		} else {
+			System.out.println("size of rotation matrix out of range");
+		}
 		return anotherz1;
 	}
 }

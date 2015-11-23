@@ -1,9 +1,12 @@
-package Function;
+package function.lsgo;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+
+import function.Function;
+
 @SuppressWarnings("unused")
-public class ShiftedandRotatedRastriginsXX implements Function<Double> {
+public class ShiftedandRotatedEllipticVII implements Function<Double> {
 
 	private double Ovector[];
 	private int Pvector[];
@@ -19,7 +22,7 @@ public class ShiftedandRotatedRastriginsXX implements Function<Double> {
 	private int DIM;
 	private double anotherz[];
 
-	public ShiftedandRotatedRastriginsXX(int dimension) {
+	public ShiftedandRotatedEllipticVII(int dimension) {
 		Ovector = null;
 		Pvector = null;
 		r25 = null;
@@ -29,16 +32,14 @@ public class ShiftedandRotatedRastriginsXX implements Function<Double> {
 		w = null;
 		minX = -100;
 		maxX = 100;
-		ID = 9;
-		s_size = 20;
+		ID = 4;
+		s_size = 7;
 		DIM = dimension;
 		anotherz = new double[dimension];
 	}
 
 	@Override
 	public Double apply(List<Double> x) {
-
-		int i;
 		double result = 0.0;
 
 		if (Ovector == null) {
@@ -55,17 +56,24 @@ public class ShiftedandRotatedRastriginsXX implements Function<Double> {
 			}
 		}
 
-		for (i = 0; i < DIM; i++) {
+		for (int i = 0; i < DIM; i++) {
 			anotherz[i] = x.get(i) - Ovector[i];
 		}
-
-		// s_size non-separable part with rotation
-		int c = 0;
 		double anotherz1[];
-		for (i = 0; i < s_size; i++) {
+		int c = 0;
+		
+		for (int i = 0; i < s_size; i++) {
 			anotherz1 = Bencmarks.rotateVector(i, c, s, Pvector, anotherz, r25, r50, r100);
-			result += w[i] * Bencmarks.rastrigin(anotherz1, s[i]);
+			c = c + s[i];
+			result += w[i] * Bencmarks.elliptic(anotherz1, s[i]);
 		}
+		
+		double z[] = new double[DIM - c];
+		
+		for (int i = c ; i < DIM; i++) {
+			z[i - c] = anotherz[Pvector[i]];
+		}
+		result += Bencmarks.elliptic(z, DIM - c);
 		return result;
 	}
 

@@ -1,10 +1,12 @@
-package Function;
+package function.lsgo;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import function.Function;
+
 @SuppressWarnings("unused")
-public class ShiftedandRotatedEllipticXX implements Function<Double> {
+public class ShiftedSchwefelsXX implements Function<Double> {
 
 	private double Ovector[];
 	private int Pvector[];
@@ -12,7 +14,7 @@ public class ShiftedandRotatedEllipticXX implements Function<Double> {
 	private double r50[][];
 	private double r100[][];
 	private int s[];
-	private double w[];	
+	private double w[];
 	private double minX;
 	private double maxX;
 	private int ID;
@@ -20,7 +22,7 @@ public class ShiftedandRotatedEllipticXX implements Function<Double> {
 	private int DIM;
 	private double anotherz[];
 
-	public ShiftedandRotatedEllipticXX(int dimension) {
+	public ShiftedSchwefelsXX(int dimension) {
 		Ovector = null;
 		Pvector = null;
 		r25 = null;
@@ -30,7 +32,7 @@ public class ShiftedandRotatedEllipticXX implements Function<Double> {
 		w = null;
 		minX = -100;
 		maxX = 100;
-		ID = 8;
+		ID = 11;
 		s_size = 20;
 		DIM = dimension;
 		anotherz = new double[dimension];
@@ -64,8 +66,9 @@ public class ShiftedandRotatedEllipticXX implements Function<Double> {
 		double anotherz1[];
 		for (i = 0; i < s_size; i++) {
 			anotherz1 = Bencmarks.rotateVector(i, c, s, Pvector, anotherz, r25, r50, r100);
-			result += w[i] * Bencmarks.elliptic(anotherz1, s[i]);
+			result += w[i] * Bencmarks.schwefel(anotherz1, s[i]);
 		}
 		return result;
 	}
+
 }

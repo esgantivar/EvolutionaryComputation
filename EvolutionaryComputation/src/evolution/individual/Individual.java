@@ -2,7 +2,8 @@ package evolution.individual;
 
 import java.util.ArrayList;
 import java.util.List;
-import Function.Function;
+
+import function.Function;
 
 public class Individual<T> implements Comparable<Individual<T>>{
 	

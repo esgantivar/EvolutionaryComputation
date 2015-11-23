@@ -1,7 +1,9 @@
-package Function;
+package function.lsgo;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+
+import function.Function;
 
 @SuppressWarnings("unused")
 public class ShiftedandRotatedAckleysXX implements Function<Double> {

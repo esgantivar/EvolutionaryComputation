@@ -1,11 +1,12 @@
-package Function;
+package function.lsgo;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
-@SuppressWarnings("unused")
-public class ShiftedSchwefelsXX implements Function<Double> {
+import function.Function;
 
+@SuppressWarnings("unused")
+public class ShiftedSchwefelsConformingOverlapping implements Function<Double> {
 	private double Ovector[];
 	private int Pvector[];
 	private double r25[][];
@@ -19,8 +20,9 @@ public class ShiftedSchwefelsXX implements Function<Double> {
 	private int s_size;
 	private int DIM;
 	private double anotherz[];
+	private int overlap;
 
-	public ShiftedSchwefelsXX(int dimension) {
+	public ShiftedSchwefelsConformingOverlapping(int dimension) {
 		Ovector = null;
 		Pvector = null;
 		r25 = null;
@@ -30,10 +32,11 @@ public class ShiftedSchwefelsXX implements Function<Double> {
 		w = null;
 		minX = -100;
 		maxX = 100;
-		ID = 11;
+		ID = 13;
 		s_size = 20;
-		DIM = dimension;
-		anotherz = new double[dimension];
+		DIM = 905;
+		overlap = 5;
+		anotherz = new double[DIM];
 	}
 
 	@Override
@@ -59,13 +62,14 @@ public class ShiftedSchwefelsXX implements Function<Double> {
 			anotherz[i] = x.get(i) - Ovector[i];
 		}
 
-		// s_size non-separable part with rotation
 		int c = 0;
 		double anotherz1[];
 		for (i = 0; i < s_size; i++) {
-			anotherz1 = Bencmarks.rotateVector(i, c, s, Pvector, anotherz, r25, r50, r100);
+			anotherz1 = Bencmarks.rotateVectorConform(i, c, overlap, s, Pvector, anotherz, r25, r50, r100);
+			c = c + s[i];
 			result += w[i] * Bencmarks.schwefel(anotherz1, s[i]);
 		}
+
 		return result;
 	}
 

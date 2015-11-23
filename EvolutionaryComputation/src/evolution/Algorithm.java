@@ -3,18 +3,18 @@ package evolution;
 import java.util.ArrayList;
 import java.util.List;
 
-import Function.Function;
 import evolution.individual.Individual;
 import evolution.individual.Space;
 import evolution.operators.Operator;
 import evolution.replacements.Replacement;
 import evolution.selectors.Selector;
 import evolution.util.Solution;
+import function.Function;
 
 public class Algorithm<T> {
 	private Population<T> pop;
-	private Population<T> parents; 
-	private Population<T> offsprings; 
+	private Population<T> parents;
+	private Population<T> offsprings;
 	private Selector selector;
 	@SuppressWarnings("unused")
 	private Replacement<T> replacement;
@@ -29,18 +29,16 @@ public class Algorithm<T> {
 		replacement = replacement_;
 		operators = operators_;
 		maxIterations = max;
-		
+
 		pop = new Population<>(space.getDimension(), DIM, space_, f, operators.size());
 		selector.setPopulation(pop);
 	}
-
-
 
 	private int selectOperator(Double rates[]) {
 		double range[] = new double[rates.length + 1];
 		range[0] = 0.0;
 		for (int i = 1; i < rates.length + 1; i++) {
-			range[i] = range[i - 1] + rates[i-1];
+			range[i] = range[i - 1] + rates[i - 1];
 		}
 		int index = range.length - 2;
 		double t = Math.random();
@@ -56,7 +54,6 @@ public class Algorithm<T> {
 		return index;
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	public void iterate() {
 		int t = 0;
@@ -69,33 +66,38 @@ public class Algorithm<T> {
 			Double rates[];
 			while (i < pop.popSize()) {
 				Individual<T> ind = selectParent();
-				rates = ind.getRates(); //extrac_rates(ind)
-				indexOperator = selectOperator(rates); //OP_SELECT (operators, rates)
+				rates = ind.getRates(); // extrac_rates(ind)
+				indexOperator = selectOperator(rates); // OP_SELECT (operators,
+														// rates)
 				if (operators.get(indexOperator).arity() == 2) {
 					if (parents.popSize() >= 1) {
-						/*************ParentSelection(Pt,ind)***************/
+						/************* ParentSelection(Pt,ind) ***************/
 						List<Individual<T>> par = new ArrayList<>(2);
 						par.add(ind);
-						par.add(parents.getIndividual((int)(Math.random()*parents.popSize())));
-						/************************apply******************************/
+						par.add(parents.getIndividual((int) (Math.random() * parents.popSize())));
+						/************************ apply ******************************/
 						List<Individual<T>> off = operators.get(indexOperator).getIndividuals(par);
-						/***********************dammit*****************************/
+						/*********************** dammit *****************************/
 						Individual<T> bestOffspring = best(off.get(0), off.get(1));
 						Individual<T> bestParent = best(par.get(0), par.get(1));
-						/*************child= BEST(offspring, ind)******************/
-						Individual<T> child = best(bestOffspring,bestParent);
-						/*********************learning rate***********************/
+						/*************
+						 * child= BEST(offspring, ind)
+						 ******************/
+						Individual<T> child = best(bestOffspring, bestParent);
+						/*********************
+						 * learning rate
+						 ***********************/
 						child.setRates(adaptRates(rates, indexOperator, child, ind));
 						offsprings.addIndividual(child);
 					} else {
 						Individual<T> bestOffspring = operators.get(indexOperator).getIndividual(ind);
-						Individual<T> child = best(bestOffspring,ind);
+						Individual<T> child = best(bestOffspring, ind);
 						child.setRates(adaptRates(rates, indexOperator, child, ind));
 						offsprings.addIndividual(child);
 					}
 				} else if (operators.get(indexOperator).arity() == 1) {
 					Individual<T> offspring = operators.get(indexOperator).getIndividual(ind);
-					Individual<T> child = best(offspring,ind);
+					Individual<T> child = best(offspring, ind);
 					child.setRates(adaptRates(rates, indexOperator, child, ind));
 					offsprings.addIndividual(child);
 				}
@@ -108,26 +110,26 @@ public class Algorithm<T> {
 			t++;
 		}
 	}
-	
-	private Individual<T> best(Individual<T> offspring, Individual<T> ind){
-		if(offspring.compareTo(ind)<= 0){//Minimizing
+
+	private Individual<T> best(Individual<T> offspring, Individual<T> ind) {
+		if (offspring.compareTo(ind) <= 0) {// Minimizing
 			return offspring;
-		}else{
+		} else {
 			return ind;
 		}
 	}
-	
-	private Individual<T> selectParent(){
-		int index = (int)(Math.random()* parents.popSize());
+
+	private Individual<T> selectParent() {
+		int index = (int) (Math.random() * parents.popSize());
 		return parents.remove(index);
 	}
-	
-	private Double[] adaptRates(Double rates[], int indexOperator, Individual<T> child, Individual<T> ind){
+
+	private Double[] adaptRates(Double rates[], int indexOperator, Individual<T> child, Individual<T> ind) {
 		double delta = Math.random(); // learning rate
 		if (child.compareTo(ind) < 0) {
-			rates[indexOperator]=((1 + delta) * rates[indexOperator]);
+			rates[indexOperator] = ((1 + delta) * rates[indexOperator]);
 		} else {
-			rates[indexOperator]=((1 - delta) * rates[indexOperator]);
+			rates[indexOperator] = ((1 - delta) * rates[indexOperator]);
 		}
 		return rates;
 	}

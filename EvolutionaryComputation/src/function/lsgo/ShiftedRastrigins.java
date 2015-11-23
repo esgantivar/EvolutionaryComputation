@@ -1,40 +1,42 @@
-package Function;
+package function.lsgo;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import function.Function;
+
 @SuppressWarnings("unused")
-public class ShiftedAckleys implements Function<Double> {
-	private double[] Ovector;
-	private int minX;	
+public class ShiftedRastrigins implements Function<Double> {
+	private double Ovector[];
+	private int minX;
 	private int maxX;
 	private int ID;
 	private double[] anotherz;
 	private int DIM;
 
-	public ShiftedAckleys(int dimension) {
-		Ovector = null;
-		minX = -32;
-		maxX = 32;
-		ID = 3;
+	public ShiftedRastrigins(int dimension) {
+		minX = -5;
+		maxX = 5;
+		ID = 2;
 		DIM = dimension;
+		Ovector = null;
 		anotherz = new double[DIM];
 	}
 
 	@Override
 	public Double apply(List<Double> x) {
-
 		if (Ovector == null) {
 			try {
-				Ovector = Bencmarks.readOvector(ID, DIM);
+				Ovector = Bencmarks.readOvector(ID,DIM);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
 
-		for (int i = DIM - 1; i >= 0; i--) {
+		for (int i = 0; i < DIM; i++) {
 			anotherz[i] = x.get(i) - Ovector[i];
 		}
-		return Bencmarks.ackley(anotherz, DIM);
+		return Bencmarks.rastrigin(anotherz, DIM);
 	}
+
 }

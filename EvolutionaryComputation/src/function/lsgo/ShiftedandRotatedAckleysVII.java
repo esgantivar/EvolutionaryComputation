@@ -1,10 +1,12 @@
-package Function;
+package function.lsgo;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import function.Function;
+
 @SuppressWarnings("unused")
-public class ShiftedandRotatedEllipticVII implements Function<Double> {
+public class ShiftedandRotatedAckleysVII implements Function<Double> {
 
 	private double Ovector[];
 	private int Pvector[];
@@ -20,7 +22,7 @@ public class ShiftedandRotatedEllipticVII implements Function<Double> {
 	private int DIM;
 	private double anotherz[];
 
-	public ShiftedandRotatedEllipticVII(int dimension) {
+	public ShiftedandRotatedAckleysVII(int dimension) {
 		Ovector = null;
 		Pvector = null;
 		r25 = null;
@@ -28,9 +30,9 @@ public class ShiftedandRotatedEllipticVII implements Function<Double> {
 		r100 = null;
 		s = null;
 		w = null;
-		minX = -100;
-		maxX = 100;
-		ID = 4;
+		minX = -32;
+		maxX = 32;
+		ID = 6;
 		s_size = 7;
 		DIM = dimension;
 		anotherz = new double[dimension];
@@ -38,6 +40,7 @@ public class ShiftedandRotatedEllipticVII implements Function<Double> {
 
 	@Override
 	public Double apply(List<Double> x) {
+		int i;
 		double result = 0.0;
 
 		if (Ovector == null) {
@@ -54,24 +57,24 @@ public class ShiftedandRotatedEllipticVII implements Function<Double> {
 			}
 		}
 
-		for (int i = 0; i < DIM; i++) {
+		for (i = 0; i < DIM; i++) {
 			anotherz[i] = x.get(i) - Ovector[i];
 		}
+
+		// s_size non-separable part with rotation
 		double anotherz1[];
 		int c = 0;
-		
-		for (int i = 0; i < s_size; i++) {
+		for (i = 0; i < s_size; i++) {
 			anotherz1 = Bencmarks.rotateVector(i, c, s, Pvector, anotherz, r25, r50, r100);
-			c = c + s[i];
-			result += w[i] * Bencmarks.elliptic(anotherz1, s[i]);
+			result += w[i] * Bencmarks.ackley(anotherz1, s[i]);
 		}
-		
+
+		// one separable part without rotation
 		double z[] = new double[DIM - c];
-		
-		for (int i = c ; i < DIM; i++) {
+		for (i = c; i < DIM; i++) {
 			z[i - c] = anotherz[Pvector[i]];
 		}
-		result += Bencmarks.elliptic(z, DIM - c);
+		result += Bencmarks.ackley(z, DIM - c);
 		return result;
 	}
 

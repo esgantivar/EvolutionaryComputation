@@ -1,9 +1,11 @@
-package Function;
+package function.lsgo;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+
+import function.Function;
 @SuppressWarnings("unused")
-public class ShiftedandRotatedRastriginsVII implements Function<Double> {
+public class ShiftedandRotatedRastriginsXX implements Function<Double> {
 
 	private double Ovector[];
 	private int Pvector[];
@@ -19,7 +21,7 @@ public class ShiftedandRotatedRastriginsVII implements Function<Double> {
 	private int DIM;
 	private double anotherz[];
 
-	public ShiftedandRotatedRastriginsVII(int dimension) {
+	public ShiftedandRotatedRastriginsXX(int dimension) {
 		Ovector = null;
 		Pvector = null;
 		r25 = null;
@@ -27,10 +29,10 @@ public class ShiftedandRotatedRastriginsVII implements Function<Double> {
 		r100 = null;
 		s = null;
 		w = null;
-		minX = -5;
-		maxX = 5;
-		ID = 5;
-		s_size = 7;
+		minX = -100;
+		maxX = 100;
+		ID = 9;
+		s_size = 20;
 		DIM = dimension;
 		anotherz = new double[dimension];
 	}
@@ -60,20 +62,12 @@ public class ShiftedandRotatedRastriginsVII implements Function<Double> {
 		}
 
 		// s_size non-separable part with rotation
-		double anotherz1[];
 		int c = 0;
+		double anotherz1[];
 		for (i = 0; i < s_size; i++) {
 			anotherz1 = Bencmarks.rotateVector(i, c, s, Pvector, anotherz, r25, r50, r100);
 			result += w[i] * Bencmarks.rastrigin(anotherz1, s[i]);
 		}
-
-		// one separable part without rotation
-		double z[] = new double[DIM - c];
-		for (i = c; i < DIM; i++) { 
-			z[i - c] = anotherz[Pvector[i]];
-		}
-
-		result += Bencmarks.rastrigin(z, DIM - c);
 		return result;
 	}
 

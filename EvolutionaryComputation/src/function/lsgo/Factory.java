@@ -1,4 +1,6 @@
-package Function;
+package function.lsgo;
+
+import function.Function;
 
 public class Factory {
 	public static int DIM = 1000;

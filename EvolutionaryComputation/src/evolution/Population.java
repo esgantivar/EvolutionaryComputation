@@ -3,9 +3,9 @@ package evolution;
 import java.util.ArrayList;
 import java.util.List;
 
-import Function.Function;
 import evolution.individual.Individual;
 import evolution.individual.Space;
+import function.Function;
 
 public class Population<T> {
 	public int pSize;
