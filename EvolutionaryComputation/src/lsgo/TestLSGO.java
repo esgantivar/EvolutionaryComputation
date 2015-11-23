@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Function.*;
 import evolution.Algorithm;
 import evolution.individual.RealSpace;
 import evolution.individual.Space;
@@ -18,6 +17,8 @@ import evolution.replacements.Generational;
 import evolution.replacements.Replacement;
 import evolution.selectors.Roulette;
 import evolution.selectors.Selector;
+import function.*;
+import function.lsgo.Factory;
 
 public class TestLSGO {
 
@@ -36,19 +37,9 @@ public class TestLSGO {
 		operators.add(new UniformMutation(space,0.01));
 		operators.add(new AllXOver());
 		//operators.add(new PivotXOver());
-		Function<Double> f = Factory.CEC2013_LSGO("f15");
-		//Algorithm<Double> search = new Algorithm<>(nPop, space, selector, replacement, operators, maxIterations, f);
-		//search.iterate();
-		
-		int s_size = 20;
-		int s[] = {50,50,25,25,100,100,25,25,50,25,100,25,100,50,25,25,25,100,50,25};
-		int ID = 14;
-		
-		try {
-			Bencmarks.readOvectorVec(ID, s_size, s);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		Function<Double> f = Factory.CEC2013_LSGO("f3");
+		Algorithm<Double> search = new Algorithm<>(nPop, space, selector, replacement, operators, maxIterations, f);
+		search.iterate();
 	}
 
 	public static List<Double> train() {

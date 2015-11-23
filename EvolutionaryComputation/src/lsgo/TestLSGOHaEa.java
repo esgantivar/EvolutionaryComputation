@@ -2,8 +2,8 @@ package lsgo;
 
 
 
-import FunctionLSGO.ShiftedEllipticFunction;
-import FunctionLSGO.f4;
+
+import function.lsgo.FactoryHaEa;
 import unalcol.descriptors.Descriptors;
 import unalcol.descriptors.WriteDescriptors;
 import unalcol.evolution.haea.HAEA;
@@ -55,7 +55,7 @@ public class TestLSGOHaEa {
     	Space<double[]> space = new HyperCube( min, max );    	
     	
     	// Optimization Function
-    	OptimizationFunction<double[]> function = new f4(DIM);
+    	OptimizationFunction<double[]> function = FactoryHaEa.HaEaCEC2013_LSGO("f3");
     	//OptimizationFunction<double[]> function = new Schwefel();
         Goal<double[]> goal = new OptimizationGoal<double[]>(function); // minimizing, add the parameter false if maximizing   	
     	
