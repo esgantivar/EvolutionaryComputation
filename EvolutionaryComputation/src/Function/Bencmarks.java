@@ -62,7 +62,7 @@ public class Bencmarks {
 		return sum;
 	}
 
-	// ackley function for m-group non-separable 
+	// ackley function for m-group non-separable
 	double ackley(double x[], int dim, int k, int Pvector[]) {
 		double sum1 = 0.0;
 		double sum2 = 0.0;
@@ -359,7 +359,7 @@ public class Bencmarks {
 	}
 
 	// m groups non-separable function
-	double rosenbrock(double x[], int dim, int k, int Pvector[]) {
+	public static double rosenbrock(double x[], int dim, int k, int Pvector[]) {
 		int j;
 		double oz, t;
 		double result = 0.0;
@@ -372,5 +372,59 @@ public class Bencmarks {
 			result += (t * t);
 		}
 		return result;
+	}
+
+	public static double[][] readOvectorVec(int ID, int s_size, int s[]) throws FileNotFoundException {
+		double d[][] = new double[s_size][];
+		String file_path = "cdatafiles/" + "F" + ID + "-xopt.txt";
+		FileReader fr = new FileReader(file_path);
+		BufferedReader textReader = new BufferedReader(fr);
+		String sCurrentLine;
+		int c = 0; // index over 1 to dim
+		int i = -1; // index over 1 to s_size
+		int up = 0; // current upper bound for one group
+		try {
+			while ((sCurrentLine = textReader.readLine()) != null) {
+				if (c == up) {
+					i++;
+					d[i] = new double[s[i]];
+					up += s[i];
+				}
+				d[i][c - (up - s[i])] = Double.valueOf(sCurrentLine);
+				c++;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (textReader != null)
+					textReader.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return d;
+	}
+
+	public static double[] rotateVectorConflict(int i, int c, double x[], int overlap, int s[], int Pvector[],
+			double OvectorVec[][], double r25[][], double r50[][], double r100[][]) {
+		double z[] = new double[s[i]];
+		double anotherz1[] = null;
+
+		for (int j = c - i * overlap; j < c + s[i] - i * overlap; ++j) {
+			z[j - (c - i * overlap)] = x[Pvector[j]] - OvectorVec[i][j - (c - i * overlap)];
+		}
+
+		if (s[i] == 25) {
+			anotherz1 = multiply(z, r25, s[i]);
+		} else if (s[i] == 50) {
+			anotherz1 = multiply(z, r50, s[i]);
+		} else if (s[i] == 100) {
+			anotherz1 = multiply(z, r100, s[i]);
+		} else {
+			System.out.println("out of range");
+		}
+
+		return anotherz1;
 	}
 }

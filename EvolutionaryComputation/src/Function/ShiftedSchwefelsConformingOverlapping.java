@@ -2,9 +2,9 @@ package Function;
 
 import java.util.List;
 
-public class ShiftedSchwefelsOverlapping implements Function<Double> {
+public class ShiftedSchwefelsConformingOverlapping implements Function<Double> {
 
-	public ShiftedSchwefelsOverlapping(int dimension) {
+	public ShiftedSchwefelsConformingOverlapping(int dimension) {
 		
 	}
 	@Override
