@@ -40,6 +40,7 @@ public class UniformMutation extends Operator<Double> {
 			}
 			ind.setGene(pick[i],value);
 		}
+		ind.computeFitness();
 		return ind;
 	}
 

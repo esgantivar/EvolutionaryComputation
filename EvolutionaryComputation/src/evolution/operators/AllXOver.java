@@ -31,6 +31,9 @@ public class AllXOver extends Operator<Double>{
 		ArrayList<Individual<Double>> offsprings = new ArrayList<>(2);
 		offsprings.add(new Individual<Double>(parents.get(0).getFunction(), temp1));
 		offsprings.add(new Individual<Double>(parents.get(0).getFunction(), temp2));
+		for (Individual<Double> ind : offsprings) {
+			ind.computeFitness();
+		}
 		return offsprings;
 	}
 

@@ -28,6 +28,9 @@ public class LinearXOver extends Operator<Double> {
 		}
 		offsprings.add(new Individual<Double>(parents.get(0).getFunction(), temps[0]));
 		offsprings.add(new Individual<Double>(parents.get(0).getFunction(), temps[1]));
+		for (Individual<Double> ind : offsprings) {
+			ind.computeFitness();
+		}
 		return offsprings;
 	}
 
