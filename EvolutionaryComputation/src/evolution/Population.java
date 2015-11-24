@@ -40,6 +40,14 @@ public class Population<T> {
 		pSize = pop.pSize;
 		fitnessAll();
 	}
+	
+	public Population(List<Individual<T>> inds, Function<T> f_){
+		population = new ArrayList<>(inds.size());
+		for (Individual<T> ind : inds) {
+			population.add(new Individual<>(ind));
+		}
+		f = f_;
+	}
 
 	public Function<T> getF() {
 		return f;
