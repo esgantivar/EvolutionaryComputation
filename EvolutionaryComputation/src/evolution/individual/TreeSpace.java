@@ -1,6 +1,5 @@
 package evolution.individual;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import evolution.individual.gp.Node;
