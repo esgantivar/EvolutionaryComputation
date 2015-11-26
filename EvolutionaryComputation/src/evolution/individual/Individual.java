@@ -10,15 +10,14 @@ public class Individual<T> implements Comparable<Individual<T>>{
 	protected Double fitness;
 	protected int dimension = 0;
 	protected List<T> genome;
-	protected double fit;
-	protected Function<T> f;
+	protected Function<T> function;
 	protected Space<T> space;
 	protected Double[] rates;
 	
 	public Individual (int DIM, Function<T> f_, int nOperator) {
 		dimension = DIM;
 		fitness = null;
-		f = f_;
+		function = f_;
 		rates = new Double[nOperator];
 		genome = new ArrayList<>(dimension);
 		initilializeRates();
@@ -28,7 +27,7 @@ public class Individual<T> implements Comparable<Individual<T>>{
 		dimension = DIM;
 		rates = new Double[nOperator];
 		fitness = null;
-		f = f_;
+		function = f_;
 		space =space_;
 		genome = new ArrayList<>(dimension);
 		for (int i = 0; i < dimension; i++) {
@@ -41,7 +40,7 @@ public class Individual<T> implements Comparable<Individual<T>>{
 		dimension = ind.getDimension();
 		rates = ind.rates.clone();
 		fitness = ind.getFitness();
-		f = ind.getFunction();
+		function = ind.getFunction();
 		space =ind.space;
 		genome = new ArrayList<>(dimension);
 		for (T t : ind.genome) {
@@ -51,7 +50,7 @@ public class Individual<T> implements Comparable<Individual<T>>{
 	
 	public Individual (Function<T> f_, T values[]){
 		dimension = values.length;
-		f = f_;
+		function = f_;
 		genome = new ArrayList<>(dimension);
 		for (T t : values) {
 			genome.add(t);
@@ -59,12 +58,12 @@ public class Individual<T> implements Comparable<Individual<T>>{
 	}
 	
 	public Double computeFitness(){
-		fitness = f.apply(genome);
+		fitness = function.apply(genome);
 		return fitness;
 	}
 	
 	public Function<T> getFunction(){
-			return f;
+			return function;
 	}
 	
 	public Double getFitness(){
@@ -132,11 +131,8 @@ public class Individual<T> implements Comparable<Individual<T>>{
 		return sb.toString();
 	}
 	
-	
 	@Override
 	public int compareTo(Individual<T> ind) {
 		return this.getFitness().compareTo(ind.getFitness());
 	}
-	
-	
 }
