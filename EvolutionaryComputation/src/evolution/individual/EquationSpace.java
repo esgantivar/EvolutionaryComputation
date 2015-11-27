@@ -15,7 +15,6 @@ public class EquationSpace extends Space<Equation> {
 	private String[] functor;
 	private int[] arityFun;
 	private String[] terminal;
-	@SuppressWarnings("unused")
 	private int limitEquation;
 	@SuppressWarnings("unused")
 	private int limitTerms;
@@ -29,6 +28,11 @@ public class EquationSpace extends Space<Equation> {
 		terminal = terminal_;
 		limitEquation = num_lines_;
 		limitTerms = num_terms_;
+	}
+	
+	@Override
+	public int getDimension() {
+		return limitEquation;
 	}
 
 	@Override
