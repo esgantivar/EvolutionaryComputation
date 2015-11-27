@@ -14,6 +14,11 @@ public class MutationInternal extends Operator<Equation> {
 	public MutationInternal(EquationSpace space_) {
 		space = space_;
 	}
+	
+	@Override
+	public int arity(){
+		return 1;
+	}
 
 	@Override
 	public List<Individual<Equation>> getIndividuals(List<Individual<Equation>> parents) {

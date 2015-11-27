@@ -13,6 +13,12 @@ public class MutationEquation extends Operator<Equation>{
 	public MutationEquation(EquationSpace space_) {
 		space= space_;
 	}
+	
+	@Override
+	public int arity(){
+		return 1;
+	}
+	
 	@Override
 	public List<Individual<Equation>> getIndividuals(List<Individual<Equation>> parents) {
 		return parents;

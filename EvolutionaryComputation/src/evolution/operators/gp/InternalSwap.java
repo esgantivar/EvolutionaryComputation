@@ -10,6 +10,11 @@ import evolution.operators.Operator;
 public class InternalSwap extends Operator<Equation> {
 
 	@Override
+	public int arity(){
+		return 1;
+	}
+	
+	@Override
 	public List<Individual<Equation>> getIndividuals(List<Individual<Equation>> parents) {
 		return parents;
 	}

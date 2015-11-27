@@ -10,6 +10,10 @@ import evolution.operators.Operator;
 public class XOverEquation extends Operator<Equation> {
 
 	@Override
+	public int arity(){
+		return 2;
+	}
+	@Override
 	public List<Individual<Equation>> getIndividuals(List<Individual<Equation>> parents) {
 		List<Individual<Equation>> inds =  new ArrayList<>(parents.size());
 		for (int i = 0; i < parents.size(); i++) {
