@@ -2,7 +2,7 @@ package function.gp;
 
 import java.util.List;
 
-import evolution.individual.gp.Tree;
+import evolution.individual.gp.Equation;
 import fplearning.interpreter.Evaluator;
 import fplearning.interpreter.GoalException;
 import fplearning.interpreter.ProgramException;
@@ -10,7 +10,7 @@ import fplearning.language.LexicalException;
 import fplearning.language.SyntacticalException;
 import function.Function;
 
-public class FitnessTree implements Function<Tree> {
+public class FitnessTree implements Function<Equation> {
 	private String[][] examples;
 
 	public FitnessTree(String[][] examples_) {
@@ -18,11 +18,11 @@ public class FitnessTree implements Function<Tree> {
 	}
 
 	@Override
-	public Double apply(List<Tree> x) {
+	public Double apply(List<Equation> x) {
 		double fitness = 0;
 		try {
 			StringBuilder str = new StringBuilder();
-			for (Tree t : x) {
+			for (Equation t : x) {
 				str.append(t.toString()).append("\n");
 			}
 			str.deleteCharAt(str.lastIndexOf("\n"));
@@ -31,7 +31,7 @@ public class FitnessTree implements Function<Tree> {
 				if ((Evaluator.evalue(str.toString(), example[0])).equals(example[1])) {
 					fitness++;
 				} else {
-					fitness--;
+					//fitness--;
 				}
 			}
 		} catch (ProgramException | GoalException | LexicalException | SyntacticalException ex) {
