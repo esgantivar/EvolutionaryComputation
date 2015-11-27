@@ -22,15 +22,25 @@ public class Algorithm<T> {
 	private Space<T> space;
 	private int maxIterations;
 
-	public Algorithm(int DIM, Space<T> space_, Selector selector_, Replacement<T> replacement_,
+	public Algorithm(int nPop_, Space<T> space_, Selector selector_, Replacement<T> replacement_,
 			List<Operator<T>> operators_, int max, Function<T> f) {
 		space = space_;
 		selector = selector_;
 		replacement = replacement_;
 		operators = operators_;
 		maxIterations = max;
-
-		pop = new Population<>(space.getDimension(), DIM, space_, f, operators.size());
+		pop = new Population<>(space.getDimension(), nPop_, space_, f, operators.size());
+		selector.setPopulation(pop);
+	}
+	
+	public Algorithm(int nPop_, Space<T> space_, Selector selector_,
+			List<Operator<T>> operators_, int max, Function<T> f) {
+		space = space_;
+		selector = selector_;
+		operators = operators_;
+		maxIterations = max;
+		pop = new Population<>(space.getDimension(), nPop_, space_, f, operators.size());
+		System.out.println("termina generar poblacion");
 		selector.setPopulation(pop);
 	}
 

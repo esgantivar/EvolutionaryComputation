@@ -8,25 +8,25 @@ import evolution.individual.Space;
 import function.Function;
 
 public class Population<T> {
-	public int pSize;
+	public int DIM;
 	private double fitnessAll[];
 	private Function<T> f;
 	private Space<T> space;
 	private ArrayList<Individual<T>> population;
 
-	public Population(int popSize_, int nPopulation, Space<T> space_, Function<T> f_, int nOperators) {
-		pSize = popSize_;
+	public Population(int DIM_, int nPopulation, Space<T> space_, Function<T> f_, int nOperators) {
+		DIM = DIM_;
 		f = f_;
 		space = space_;
 		population = new ArrayList<>();
 		for (int i = 0; i < nPopulation; i++) {
-			population.add(new Individual<T>(pSize, f, space, nOperators));
+			population.add(new Individual<T>(DIM, f, space, nOperators));
 		}
 	}
 
 	public Population(int DIM_, Function<T> f_, ArrayList<Individual<T>> inds) {
 		population = new ArrayList<>(inds);
-		pSize = DIM_;
+		DIM = DIM_;
 		f = f_;
 	}
 
@@ -37,7 +37,7 @@ public class Population<T> {
 		}
 		
 		f = pop.f;
-		pSize = pop.pSize;
+		DIM = pop.DIM;
 		fitnessAll();
 	}
 	
@@ -62,7 +62,7 @@ public class Population<T> {
 	}
 
 	public Population(int popSize_) {
-		pSize = popSize_;
+		DIM = popSize_;
 		population = new ArrayList<>();
 	}
 
