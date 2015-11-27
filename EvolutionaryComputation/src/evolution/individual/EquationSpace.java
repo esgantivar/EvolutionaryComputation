@@ -1,21 +1,14 @@
 package evolution.individual;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import evolution.individual.gp.Node;
 import evolution.individual.gp.Equation;
-import evolution.operators.gp.InternalSwap;
-import evolution.operators.gp.MutationEquation;
-import evolution.operators.gp.MutationInternal;
-import evolution.operators.gp.Swap;
-import evolution.operators.gp.XOverEquation;
 import fplearning.interpreter.Evaluator;
 import fplearning.interpreter.GoalException;
 import fplearning.interpreter.ProgramException;
 import fplearning.language.LexicalException;
 import fplearning.language.SyntacticalException;
-import function.gp.FitnessTree;
 
 public class EquationSpace extends Space<Equation> {
 
@@ -135,40 +128,5 @@ public class EquationSpace extends Space<Equation> {
 			nodeEquation.addChild(nodeTerminal.getRoot()); // terminal
 		}
 		return nodeEquation;
-	}
-
-	public static void main(String args[]) {
-		String[][] examples = { { "geq(0,1)", "false" }, { "geq(0,0)", "true" }, { "geq(1,0)", "true" },
-				{ "geq(1,1)", "true" }, { "geq(1,2)", "false" }, { "geq(2,1)", "true" }, { "geq(2,5)", "false" },
-				{ "geq(5,2)", "true" }, { "geq(3,3)", "true" } };
-		String[] functor = { "geq", "s" };
-		int[] arityFun = { 2, 1 };
-		String[] terminal = { "0", "X", "Y", "true", "false" };
-		int limitEquation = 3;
-		int limitTerms = 2;
-
-		Space<Equation> g = new EquationSpace(functor, arityFun, terminal, limitEquation, limitTerms, "geq(0,1)");
-		List<Individual<Equation>> parents = new ArrayList<>();
-/*		for (int i = 0; i < 2; i++) {
-			parents.add(new Individual<>(3, new FitnessTree(examples), g, 3));
-		}
-
-		List<Individual<Equation>> off = new XOverEquation().getIndividuals(parents);
-		System.out.println("Parents: ");
-		for (Individual<Equation> ind : parents) {
-			System.out.println(ind.toString());
-			System.out.println(ind.getFitness());
-		}
-		System.out.println("offsprings: ");
-		for (Individual<Equation> ind : off) {
-			System.out.println(ind.toString());
-			System.out.println(ind.getFitness());
-		}*/
-		
-		Individual<Equation> ind = new Individual<>(3, new FitnessTree(examples), g, 3);
-		System.out.println(ind.toString());
-		System.out.println(new MutationInternal((EquationSpace)g).getIndividual(ind));
-		
-		
 	}
 }
