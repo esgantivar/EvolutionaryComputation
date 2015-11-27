@@ -1,28 +1,82 @@
 package lsgo;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 import evolution.Algorithm;
+import evolution.AlgorithmDC;
+import evolution.AlgorithmNon;
+import evolution.individual.EquationSpace;
 import evolution.individual.RealSpace;
 import evolution.individual.Space;
+import evolution.individual.gp.Equation;
+import evolution.operators.AdaptMutationIntensity;
 import evolution.operators.AllXOver;
+import evolution.operators.GaussianMutation;
 import evolution.operators.LinearXOver;
+import evolution.operators.OneFifthRule;
 import evolution.operators.Operator;
 import evolution.operators.PivotXOver;
 import evolution.operators.UniformMutation;
+import evolution.operators.gp.InternalSwap;
+import evolution.operators.gp.MutationEquation;
+import evolution.operators.gp.MutationInternal;
+import evolution.operators.gp.Swap;
+import evolution.operators.gp.XOverEquation;
 import evolution.replacements.Elitist;
 import evolution.replacements.Generational;
 import evolution.replacements.Replacement;
+import evolution.selectors.DynamicInbreeding;
+import evolution.selectors.Inbreeding;
 import evolution.selectors.Roulette;
 import evolution.selectors.Selector;
 import function.*;
+import function.distance.Distance;
+import function.distance.Euclidean;
+import function.gp.FitnessTree;
 import function.lsgo.Factory;
 
 public class TestLSGO {
 
 	public static void main(String args[]) {
+		equationSearh();
+		//realSearch();
+	}
+	
+	public static void equationSearh(){
+		String[][] examples = {
+				{"geq(0,1)", "false"},
+				{"geq(0,0)", "true"},
+				{"geq(1,0)", "true"},
+				{"geq(1,1)", "true"},
+				{"geq(1,2)", "false"},
+				{"geq(2,1)", "true"},
+				{"geq(2,5)", "false"},
+				{"geq(5,2)", "true"},
+				{"geq(3,3)", "true"}
+				};
+		String[] functor = {"geq", "s"};
+		int[] arityFun = {2, 1};
+		String[] terminal = {"0", "X", "Y","true","false"};
+		int DIM = 3;
+		Space<Equation> space = new EquationSpace(functor, arityFun, terminal, DIM, 10, "geq(0,1)");
+		Function<Equation> f = new FitnessTree(examples);
+		int nPop = 100;
+		int maxIterations = 20;
+		List<Operator<Equation>> operators = new ArrayList<>();
+		//operators.add(new XOverEquation());
+		operators.add(new Swap());
+		operators.add(new InternalSwap());
+		operators.add(new MutationInternal((EquationSpace)space));
+		operators.add(new MutationEquation((EquationSpace)space));
+		Selector selector = new Roulette();
+		
+		AlgorithmNon<Equation> search = new AlgorithmNon<Equation>(nPop, space, selector, operators, maxIterations, f);
+		search.iterate();
+		
+	}
+		
+	public static void realSearchDC(){
 		double min = -100;
 		double max = 100;
 		int DIM = 1000;
@@ -30,14 +84,44 @@ public class TestLSGO {
 		int maxIterations = 10000;
 		Space<Double> space = new RealSpace(min, max, DIM);
 		Selector selector = new Roulette();
+		AdaptMutationIntensity adapt = new OneFifthRule(100, 0.5);
+		Replacement<Double> replacement = new Generational();
+		Distance<Double> distance = new Euclidean();
+		List<Operator<Double>> operators = new ArrayList<>();
+		Inbreeding strategy = new DynamicInbreeding();
+		operators.add(new LinearXOver());
+		//operators.add(new UniformMutation(space,0.05));
+		operators.add(new GaussianMutation(0.5,adapt,0.02));
+		operators.add(new UniformMutation(space,0.01));
+		operators.add(new AllXOver());
+		//operators.add(new PivotXOver());
+		Function<Double> f = Factory.CEC2013_LSGO("f15");
+		//Function<Double> f = new Schwefel();
+		//Algorithm<Double> search = new Algorithm<>(nPop, space, selector, replacement, operators, maxIterations, f);
+		//search.iterate();
+		AlgorithmDC<Double> searchDC = new AlgorithmDC<>(nPop, space, strategy, replacement, operators, maxIterations, f, distance);
+		searchDC.iterate();
+	}
+	
+	public static void realSearch(){
+		double min = -100;
+		double max = 100;
+		int DIM = 1000;
+		int nPop = 100;
+		int maxIterations = 10000;
+		Space<Double> space = new RealSpace(min, max, DIM);
+		Selector selector = new Roulette();
+		AdaptMutationIntensity adapt = new OneFifthRule(100, 0.9);
 		Replacement<Double> replacement = new Generational();
 		List<Operator<Double>> operators = new ArrayList<>();
 		operators.add(new LinearXOver());
 		//operators.add(new UniformMutation(space,0.05));
-		operators.add(new UniformMutation(space,0.01));
-		operators.add(new AllXOver());
+		operators.add(new GaussianMutation(0.1,adapt,0.02));
+		operators.add(new UniformMutation(space,0.02));
+		//operators.add(new AllXOver());
 		//operators.add(new PivotXOver());
-		Function<Double> f = Factory.CEC2013_LSGO("f3");
+		Function<Double> f = Factory.CEC2013_LSGO("f1");
+		//Function<Double> f = new Schwefel();
 		Algorithm<Double> search = new Algorithm<>(nPop, space, selector, replacement, operators, maxIterations, f);
 		search.iterate();
 	}

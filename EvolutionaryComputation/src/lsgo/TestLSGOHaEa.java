@@ -50,8 +50,8 @@ public class TestLSGOHaEa {
 	public static void real(){
 		// Search Space definition
 		int DIM = 1000;
-		double[] min = DoubleArray.create(DIM, -32);
-		double[] max = DoubleArray.create(DIM, 32);
+		double[] min = DoubleArray.create(DIM, -5);
+		double[] max = DoubleArray.create(DIM, 5);
     	Space<double[]> space = new HyperCube( min, max );    	
     	
     	// Optimization Function
