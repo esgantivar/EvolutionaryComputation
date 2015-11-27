@@ -4,8 +4,6 @@ import java.util.List;
 
 public class Equation {
 	private Node root;
-	private Node left;
-	private Node right;
 	int countChild = 0;
 
 	public Equation(String rootData, int type, int arity) {
