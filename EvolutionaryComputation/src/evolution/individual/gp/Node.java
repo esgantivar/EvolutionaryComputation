@@ -11,21 +11,26 @@ public class Node {
 	protected String value;
 	protected Node parent = null;
 	protected int type;
+	protected int arity;
 	protected List<Node> children = null;
 
 	public Node() {
 		children = new ArrayList<>();
 	}
 
-	public Node(String value_, int type_) {
+	public Node(String value_, int type_, int arity_, Node parent_) {
 		value = value_;
 		type = type_;
 		children = new ArrayList<>();
+		arity = arity_;
+		if (parent != null)
+			parent = new Node(parent_);
 	}
 
 	public Node(Node n) {
 		value = n.value;
 		type = n.type;
+		arity = n.arity;
 		children = new ArrayList<>();
 		for (Node child : n.children) {
 			children.add(new Node(child));
@@ -34,9 +39,10 @@ public class Node {
 			parent = n.parent;
 	}
 
-	public Node(String value_, Node parent_, int type_, List<Node> children_) {
+	public Node(String value_, Node parent_, int type_, List<Node> children_, int arity_) {
 		value = value_;
 		type = type_;
+		arity = arity_;
 		children = new ArrayList<>();
 		for (Node node : children_) {
 			children.add(new Node(node));
@@ -53,6 +59,10 @@ public class Node {
 	}
 
 	public int getArity() {
+		return arity;
+	}
+
+	public int getType() {
 		return type;
 	}
 
@@ -119,6 +129,17 @@ public class Node {
 		}
 
 		return 1 + max;
+	}
+
+	public int numChildren() {
+		int num = 0;
+		if (children == null) {
+			return 1;
+		}
+		for (int i = 0; i < children.size(); i++) {
+			num += children.get(i).numChildren();
+		}
+		return 1 + num;
 	}
 
 	@Override

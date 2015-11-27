@@ -122,12 +122,12 @@ public class Individual<T> implements Comparable<Individual<T>>{
 	@Override
 	public  String toString(){
 		StringBuilder sb = new StringBuilder();
-		sb.append("[");
+		//sb.append("[");
 		for (T gene : genome) {
-			sb.append(gene.toString()+", ");
+			sb.append(gene.toString()+" ");
 		}
-		sb.deleteCharAt(sb.lastIndexOf(","));
-		sb.append("]");
+		sb.deleteCharAt(sb.lastIndexOf(" "));
+		//sb.append("]");
 		return sb.toString();
 	}
 	
