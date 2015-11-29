@@ -1,5 +1,12 @@
 package evolution;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +28,8 @@ public class Algorithm<T> {
 	private List<Operator<T>> operators;
 	private Space<T> space;
 	private int maxIterations;
+	private Writer out = null;
+	public String name;
 
 	public Algorithm(int nPop_, Space<T> space_, Selector selector_, Replacement<T> replacement_,
 			List<Operator<T>> operators_, int max, Function<T> f) {
@@ -31,16 +40,17 @@ public class Algorithm<T> {
 		maxIterations = max;
 		pop = new Population<>(space.getDimension(), nPop_, space_, f, operators.size());
 		selector.setPopulation(pop);
+		name = f.getClass().getName() + ".txt";
+		openFile();
 	}
-	
-	public Algorithm(int nPop_, Space<T> space_, Selector selector_,
-			List<Operator<T>> operators_, int max, Function<T> f) {
+
+	public Algorithm(int nPop_, Space<T> space_, Selector selector_, List<Operator<T>> operators_, int max,
+			Function<T> f) {
 		space = space_;
 		selector = selector_;
 		operators = operators_;
 		maxIterations = max;
 		pop = new Population<>(space.getDimension(), nPop_, space_, f, operators.size());
-		System.out.println("termina generar poblacion");
 		selector.setPopulation(pop);
 	}
 
@@ -116,10 +126,15 @@ public class Algorithm<T> {
 			pop = new Population<T>(offsprings);
 			selector.setPopulation(pop);
 			Solution.sort(pop);
-			Solution.printStatistics(pop);
+			try {
+				out.write(Solution.printStatistics(pop,t+1)+"\n");
+			} catch (IOException e) {
+			}
 			t++;
 		}
+		closeFile();
 	}
+	
 
 	private Individual<T> best(Individual<T> offspring, Individual<T> ind) {
 		if (offspring.compareTo(ind) <= 0) {// Minimizing
@@ -143,4 +158,19 @@ public class Algorithm<T> {
 		}
 		return rates;
 	}
+
+	private void openFile() {
+		out = null;
+		try {
+			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(name), "UTF-8"));
+		} catch (UnsupportedEncodingException | FileNotFoundException e) {
+		}
+	}
+	private void closeFile(){
+		try {
+			out.close();
+		} catch (IOException ex3) {
+		}
+	}
+	
 }

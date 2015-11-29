@@ -22,7 +22,7 @@ public class Solution {
 		
 	}
 
-	public static void printStatistics(Population<?> pop) {
+	public static String printStatistics(Population<?> pop, int nit) {
 		Double rates[] = new Double[pop.getIndividual(0).getRates().length];
 		for (int i = 0; i < rates.length; i++) {
 			rates[i] = 0.0;
@@ -64,7 +64,8 @@ public class Solution {
 		for (Double rate : rates) {
 			sb.append(rate + ";");
 		}
-		System.out.println(best+";"+median+";"+worst+";"+mean+";"+stdev+";"+sb.toString());
+		System.out.println(nit+";"+best+";"+median+";"+worst+";"+mean+";"+stdev+";"+sb.toString());
+		return nit+";"+best+";"+median+";"+worst+";"+mean+";"+stdev+";"+sb.toString();
 	}
 
 }

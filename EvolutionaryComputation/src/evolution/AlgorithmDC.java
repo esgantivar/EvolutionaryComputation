@@ -106,7 +106,7 @@ public class AlgorithmDC<T> {
 			pop = new Population<T>(offsprings);
 			selector.setPopulation(pop);
 			Solution.sort(pop);
-			Solution.printStatistics(pop);
+			Solution.printStatistics(pop,t+1);
 			t++;
 		}
 	}

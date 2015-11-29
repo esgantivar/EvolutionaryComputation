@@ -1,5 +1,12 @@
 package evolution;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +26,10 @@ public class AlgorithmNon<T> {
 	private List<Operator<T>> operators;
 	private Space<T> space;
 	private int maxIterations;
+	private Writer out = null;
 
-	public AlgorithmNon(int nPop_, Space<T> space_, Selector selector_,
-			List<Operator<T>> operators_, int max, Function<T> f) {
+	public AlgorithmNon(int nPop_, Space<T> space_, Selector selector_, List<Operator<T>> operators_, int max,
+			Function<T> f) {
 		space = space_;
 		selector = selector_;
 
@@ -29,6 +37,7 @@ public class AlgorithmNon<T> {
 		maxIterations = max;
 		pop = new Population<>(space.getDimension(), nPop_, space_, f, operators.size());
 		selector.setPopulation(pop);
+		openFile("seguimientoNoN.txt");
 	}
 
 	private int selectOperator(Double rates[]) {
@@ -57,30 +66,37 @@ public class AlgorithmNon<T> {
 		while (t < maxIterations) {
 			parents = new Population<>(pop);
 			parentsRou = selector.getParents();
-			offsprings = new Population<>(space.getDimension());
+			offsprings = new Population<>(pop.popSize());
 			offsprings.setFunction(pop.getF());
 			int i = 0;
 			int indexOperator;
 			Double rates[];
 			while (i < pop.popSize()) {
+
 				Individual<T> ind = selectParent();
+
 				rates = ind.getRates(); // extrac_rates(ind)
-				indexOperator = selectOperator(rates); // OP_SELECT (operators,rates)
+				indexOperator = selectOperator(rates); // OP_SELECT
+														// (operators,rates)
+
 				if (operators.get(indexOperator).arity() == 2) {
 					if (parents.popSize() >= 1) {
 						/************* ParentSelection(Pt,ind) ***************/
 						List<Individual<T>> par = new ArrayList<>(2);
 						par.add(ind);
 						par.add(parentsRou.getIndividual((int) (Math.random() * parentsRou.popSize())));
+
 						/************************ apply ******************************/
 						List<Individual<T>> off = operators.get(indexOperator).getIndividuals(par);
 						/*********************** dammit *****************************/
-						Individual<T> bestOffspring = best(off.get(0), off.get(1));
-						//Individual<T> bestParent = best(par.get(0), par.get(1));
+						Individual<T> bestOffspring = new Individual<T>(best(off.get(0), off.get(1)));
+						// Individual<T> bestParent = new
+						// Individual<T>(best(par.get(0), par.get(1)));
 						/*************
 						 * child= BEST(offspring, ind)
 						 ******************/
-						Individual<T> child = best(bestOffspring, ind);
+						Individual<T> child = new Individual<T>(best(bestOffspring, ind));
+
 						/*********************
 						 * learning rate
 						 ***********************/
@@ -88,32 +104,41 @@ public class AlgorithmNon<T> {
 						offsprings.addIndividual(child);
 					} else {
 						Individual<T> bestOffspring = operators.get(indexOperator).getIndividual(ind);
-						Individual<T> child = best(bestOffspring, ind);
+						Individual<T> child = new Individual<T>(best(bestOffspring, ind));
+
 						child.setRates(adaptRates(rates, indexOperator, child, ind));
 						offsprings.addIndividual(child);
+
 					}
 				} else if (operators.get(indexOperator).arity() == 1) {
 					Individual<T> offspring = operators.get(indexOperator).getIndividual(ind);
-					Individual<T> child = best(offspring, ind);
+					Individual<T> child = new Individual<T>(best(offspring, ind));
 					child.setRates(adaptRates(rates, indexOperator, child, ind));
 					offsprings.addIndividual(child);
 				}
 				i++;
 			}
+
 			pop = new Population<T>(offsprings);
+
 			selector.setPopulation(pop);
 			Solution.sort(pop);
-			Solution.printStatistics(pop);
+			try {
+				out.write(Solution.printStatistics(pop, t + 1) + "\n");
+			} catch (IOException e) {
+			}
 			t++;
 		}
+		closeFile();
 		System.out.println(pop.getIndividual(0).toString());
 	}
 
 	private Individual<T> best(Individual<T> offspring, Individual<T> ind) {
+
 		if (offspring.compareTo(ind) <= 0) {// Minimizing
-			return offspring;
+			return new Individual<>(offspring);
 		} else {
-			return ind;
+			return new Individual<>(ind);
 		}
 	}
 
@@ -130,5 +155,20 @@ public class AlgorithmNon<T> {
 			rates[indexOperator] = ((1 - delta) * rates[indexOperator]);
 		}
 		return rates;
+	}
+
+	private void openFile(String name) {
+		out = null;
+		try {
+			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(name), "UTF-8"));
+		} catch (UnsupportedEncodingException | FileNotFoundException e) {
+		}
+	}
+
+	private void closeFile() {
+		try {
+			out.close();
+		} catch (IOException ex3) {
+		}
 	}
 }
