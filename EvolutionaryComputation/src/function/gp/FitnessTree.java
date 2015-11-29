@@ -30,14 +30,13 @@ public class FitnessTree implements Function<Equation> {
 			for (String[] example : examples) {
 				if ((Evaluator.evalue(str.toString(), example[0])).equals(example[1])) {
 					fitness++;
-				} else {
-					//fitness--;
 				}
 			}
 		} catch (ProgramException | GoalException | LexicalException | SyntacticalException ex) {
-			fitness -= 20;
+			fitness = Double.NEGATIVE_INFINITY;
+			return -1*Double.NEGATIVE_INFINITY;
 		}
-		return fitness;
+		return -1*fitness;
 	}
 
 }
