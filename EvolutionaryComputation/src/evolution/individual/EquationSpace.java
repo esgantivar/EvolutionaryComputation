@@ -29,7 +29,7 @@ public class EquationSpace extends Space<Equation> {
 		limitEquation = num_lines_;
 		limitTerms = num_terms_;
 	}
-	
+
 	@Override
 	public int getDimension() {
 		return limitEquation;
@@ -89,9 +89,9 @@ public class EquationSpace extends Space<Equation> {
 		for (int i = 0; i < arityFun[index]; i++) {
 			option = Math.random() >= .5 ? 0 : 1;
 			if (option == 0 || depth < 1) {
-				nodeFunction.getRoot().getChildren().add(generateTerminal().getRoot());
+				nodeFunction.addChild(generateTerminal().getRoot());
 			} else {
-				nodeFunction.getRoot().getChildren().add(generateFunction(depth - 1).getRoot());
+				nodeFunction.addChild(generateFunction(depth - 1).getRoot());
 			}
 		}
 		return nodeFunction;
@@ -109,13 +109,14 @@ public class EquationSpace extends Space<Equation> {
 	}
 
 	public Equation generateEquation(int depth) {
-		int option = (Math.random() >= .5 ? 0 : 1);
-		Equation nodeEquation = new Equation(" = ", Node.EQUATION, 2);
+		String param = (Math.random() >= .5 ? "terminal" : "function");
+		Equation equation = new Equation(" = ", Node.EQUATION, 2);
 		Equation nodeFunction = generateFunction(0, depth - 1);
-		nodeEquation.addChild(nodeFunction.getRoot());
+		equation.addChild(nodeFunction.getRoot());
 		int index;
-		int p = Math.random() >= .5 ? 0 : 1;
-		if (p == 0) {
+		if (param.equals("function") && depth > 0) {
+			equation.addChild(generateFunction(nodeFunction.getChildren()).getRoot()); // function
+		} else if (param.equals("terminal") && existBooleanTerminals() && (Math.random() > 0.5)) {
 			while (true) {
 				index = (int) (Math.random() * terminal.length);
 				if (terminal[index] == "true" || terminal[index] == "false") {
@@ -123,14 +124,23 @@ public class EquationSpace extends Space<Equation> {
 				}
 			}
 			Equation terminal = generateTerminal(index);
-			nodeEquation.getRoot().getChildren().add(terminal.getRoot()); // funct
-		} else if (option == 0 && depth > 0) {
-			nodeEquation.addChild(generateFunction(nodeFunction.getChildren()).getRoot()); // function
+			equation.addChild(terminal.getRoot());
 		} else {
 			int childIndex = (int) (Math.random() * nodeFunction.numChildren());
 			Equation nodeTerminal = new Equation(nodeFunction.getChild(childIndex));
-			nodeEquation.addChild(nodeTerminal.getRoot()); // terminal
+			equation.addChild(nodeTerminal.getRoot()); // terminal
 		}
-		return nodeEquation;
+		return equation;
+	}
+
+	private boolean existBooleanTerminals() {
+		boolean exist = false;
+		for (String t : terminal) {
+			if (t.equals("true") || t.equals("false")) {
+				exist = true;
+				break;
+			}
+		}
+		return exist;
 	}
 }

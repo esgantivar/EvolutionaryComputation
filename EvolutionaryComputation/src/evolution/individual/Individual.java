@@ -7,7 +7,7 @@ import function.Function;
 
 public class Individual<T> implements Comparable<Individual<T>>{
 	
-	protected Double fitness;
+	protected Double fitness=null;
 	protected int dimension = 0;
 	protected List<T> genome;
 	protected Function<T> function;
@@ -34,9 +34,10 @@ public class Individual<T> implements Comparable<Individual<T>>{
 			genome.add(space.next());
 		}
 		initilializeRates();
+		computeFitness();
 	}
 	
-	public Individual (Individual<T> ind) {
+	public Individual (final Individual<T> ind) {
 		dimension = ind.getDimension();
 		rates = ind.rates.clone();
 		fitness = ind.getFitness();
@@ -46,6 +47,7 @@ public class Individual<T> implements Comparable<Individual<T>>{
 		for (T t : ind.genome) {
 			genome.add(t);
 		}
+		computeFitness();
 	}
 	
 	public Individual (Function<T> f_, T values[]){
@@ -55,6 +57,17 @@ public class Individual<T> implements Comparable<Individual<T>>{
 		for (T t : values) {
 			genome.add(t);
 		}
+		computeFitness();
+	}
+	
+	public Individual (Function<T> f_, List<T> values){
+		dimension = values.size();
+		function = f_;
+		genome = new ArrayList<>(dimension);
+		for (T t : values) {
+			genome.add(t);
+		}
+		computeFitness();
 	}
 	
 	public Double computeFitness(){
@@ -91,6 +104,7 @@ public class Individual<T> implements Comparable<Individual<T>>{
 	public void setGene(int index,T value){
 		genome.set(index, value);
 	}
+	
 	
 	private void initilializeRates(){
 		for (int i = 0; i < rates.length; i++) {
