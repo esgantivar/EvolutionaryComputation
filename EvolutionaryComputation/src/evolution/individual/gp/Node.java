@@ -3,7 +3,7 @@ package evolution.individual.gp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Node {
+public class Node{
 	public static final int FUNCTION = 0;
 	public static final int EQUATION = 1;
 	public static final int TERMINAL = 2;
@@ -27,13 +27,13 @@ public class Node {
 			parent = new Node(parent_);
 	}
 
-	public Node(Node n) {
+	public Node(final Node n) {
 		value = n.value;
 		type = n.type;
 		arity = n.arity;
 		children = new ArrayList<>();
 		for (Node child : n.children) {
-			children.add(new Node(child));
+			children.add(child.clone());
 		}
 		if (n.parent != null)
 			parent = n.parent;
@@ -45,9 +45,10 @@ public class Node {
 		arity = arity_;
 		children = new ArrayList<>();
 		for (Node node : children_) {
-			children.add(new Node(node));
+			children.add(node.clone());
 		}
-		parent = new Node(parent_);
+		if(parent != null){
+		parent = new Node(parent_);}
 	}
 
 	public String getValue() {
@@ -89,13 +90,13 @@ public class Node {
 	}
 
 	public void addChild(Node child) {
-		children.add(new Node(child));
+		children.add(child.clone());
 	}
 
 	public void addChildren(List<Node> children_) {
 		children = new ArrayList<>();
 		for (Node node : children_) {
-			children.add(new Node(node));
+			children.add(node.clone());
 		}
 	}
 
@@ -104,7 +105,7 @@ public class Node {
 		type = node.type;
 		children = new ArrayList<>();
 		for (Node child : node.children) {
-			children.add(new Node(child));
+			children.add(child.clone());
 		}
 		if (node.parent != null)
 			parent = node.parent;
@@ -131,15 +132,19 @@ public class Node {
 		return 1 + max;
 	}
 
-	public int numChildren() {
+	public int numTerms() {
 		int num = 0;
 		if (children == null) {
 			return 1;
 		}
 		for (int i = 0; i < children.size(); i++) {
-			num += children.get(i).numChildren();
+			num += children.get(i).numTerms();
 		}
 		return 1 + num;
+	}
+	@Override
+	public Node clone(){
+		return new Node(this.value,null,this.type,this.children,this.arity);
 	}
 
 	@Override

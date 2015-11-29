@@ -48,7 +48,7 @@ public class Equation {
 	}
 
 	public int numNodes() {
-		return root.numChildren() - 1;
+		return root.numTerms() - 1;
 	}
 
 	public Node getRandomNode() {
