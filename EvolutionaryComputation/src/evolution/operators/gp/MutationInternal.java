@@ -1,5 +1,6 @@
 package evolution.operators.gp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import evolution.individual.EquationSpace;
@@ -14,9 +15,9 @@ public class MutationInternal extends Operator<Equation> {
 	public MutationInternal(EquationSpace space_) {
 		space = space_;
 	}
-	
+
 	@Override
-	public int arity(){
+	public int arity() {
 		return 1;
 	}
 
@@ -26,9 +27,15 @@ public class MutationInternal extends Operator<Equation> {
 	}
 
 	@Override
-	public Individual<Equation> getIndividual(Individual<Equation> ind) {
-		int indexEquation = (int) (Math.random() * ind.getGenome().size());
-		Node nodeAux = ind.getGene(indexEquation).getRandomNode();
+	public Individual<Equation> getIndividual(final Individual<Equation> ind) {
+		Individual<Equation> nInd = new Individual<Equation>(ind);
+		List<Equation> list = new ArrayList<>();
+		for (Equation e : ind.getGenome()) {
+			list.add(new Equation(e));
+		}
+		int indexEquation = (int) (Math.random() * nInd.getGenome().size());
+		Node nodeAux = list.get(indexEquation).getRandomNode();
+		
 		int depth = nodeAux.depth();
 		if (nodeAux.getType() == Node.EQUATION && indexEquation < 1) {
 			nodeAux.replace(space.generateFunction(depth).getRoot());
@@ -40,7 +47,9 @@ public class MutationInternal extends Operator<Equation> {
 				nodeAux.replace(space.generateFunction(depth).getRoot());
 			}
 		}
-		return new Individual<Equation>(ind);
+		Individual<Equation> newInd = new Individual<Equation>(ind.getFunction(),list);
+		newInd.setRates(ind.getRates());
+		return newInd;
 	}
 
 }

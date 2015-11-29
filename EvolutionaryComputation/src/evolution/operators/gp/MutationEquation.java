@@ -26,8 +26,9 @@ public class MutationEquation extends Operator<Equation>{
 
 	@Override
 	public Individual<Equation> getIndividual(Individual<Equation> ind) {
-		int indexEquation = (int) (Math.random() * ind.getGenome().size());
-		ind.getGenome().set(indexEquation, space.generateEquation(3));
-		return new Individual<Equation>(ind);
+		Individual<Equation> nInd = new Individual<Equation>(ind);
+		int indexEquation = (int) (Math.random() * nInd.getGenome().size());
+		nInd.getGenome().set(indexEquation, space.generateEquation(3));
+		return new Individual<Equation>(nInd);
 	}
 }
