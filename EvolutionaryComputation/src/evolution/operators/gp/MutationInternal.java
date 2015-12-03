@@ -38,13 +38,13 @@ public class MutationInternal extends Operator<Equation> {
 		
 		int depth = nodeAux.depth();
 		if (nodeAux.getType() == Node.EQUATION && indexEquation < 1) {
-			nodeAux.replace(space.generateFunction(depth).getRoot());
+			nodeAux.replace(space.generateFunction(depth-1).getRoot());
 		} else {
 			int option = Math.random() < 0.5 ? 0 : 1;
 			if (option == 0) {
 				nodeAux.replace(space.generateTerminal().getRoot());
 			} else {
-				nodeAux.replace(space.generateFunction(depth).getRoot());
+				nodeAux.replace(space.generateFunction(depth-1).getRoot());
 			}
 		}
 		Individual<Equation> newInd = new Individual<Equation>(ind.getFunction(),list);

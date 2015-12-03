@@ -1,5 +1,12 @@
 package evolution;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +32,8 @@ public class AlgorithmDC<T> {
 	private int maxIterations;
 	private Distance<T> distance;
 	private int poolMF;
+	private Writer out = null;
+	public String name;
 
 	public AlgorithmDC(int DIM, Space<T> space_, Inbreeding selector_, Replacement<T> replacement_,
 			List<Operator<T>> operators_, int max, Function<T> f, Distance<T> dis) {
@@ -39,6 +48,16 @@ public class AlgorithmDC<T> {
 
 		pop = new Population<>(space.getDimension(), DIM, space_, f, operators.size());
 		selector.setPopulation(pop);
+		name = f.getClass().getName() + "DC_pop_ini.txt";
+		openFile();
+		for (Individual<T> ind : pop.getIndividuals()) {
+			try {
+				out.write(ind.toString()+" "+(-1*ind.getFitness())+"\n");
+			} catch (IOException e) {
+			}
+		}
+		closeFile();
+		
 	}
 
 	private int selectOperator(Double rates[]) {
@@ -76,6 +95,7 @@ public class AlgorithmDC<T> {
 				rates = ind.getRates(); // extrac_rates(ind)
 				indexOperator = selectOperator(rates); // OP_SELECT (operators,
 														// rates)
+				
 				if (operators.get(indexOperator).arity() == 2) {
 					/************* ParentSelection(Pt,ind) ***************/
 					List<Individual<T>> par = new ArrayList<>(2);
@@ -94,6 +114,7 @@ public class AlgorithmDC<T> {
 					offsprings.addIndividual(child);
 
 				} else if (operators.get(indexOperator).arity() == 1) {
+					
 					Individual<T> offspring = operators.get(indexOperator).getIndividual(ind);
 					List<Individual<T>> temp = new ArrayList<>(1);
 					temp.add(offspring);
@@ -106,9 +127,26 @@ public class AlgorithmDC<T> {
 			pop = new Population<T>(offsprings);
 			selector.setPopulation(pop);
 			Solution.sort(pop);
-			Solution.printStatistics(pop,t+1);
+			//Solution.printStatistics(pop,t+1);
+			if((t+1)%10==0){
+				name = pop.getF().getClass().getName() + "DC"+(t+1)+".txt";
+				openFile();
+				for (Individual<T> ind : pop.getIndividuals()) {
+					try {
+						out.write(ind.toString()+" "+(-1*ind.getFitness())+"\n");
+					} catch (IOException e) {
+					}
+				}
+				closeFile();
+			}
+			
+			/*try {
+				out.write(Solution.printStatistics(pop,t+1)+"\n");
+			} catch (IOException e) {
+			}*/
 			t++;
 		}
+		closeFile();
 	}
 
 	private Individual<T> best(Individual<T> offspring, Individual<T> ind) {
@@ -151,5 +189,19 @@ public class AlgorithmDC<T> {
 			rates[indexOperator] = ((1 - delta) * rates[indexOperator]);
 		}
 		return rates;
+	}
+	
+	private void openFile() {
+		out = null;
+		try {
+			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(name), "UTF-8"));
+		} catch (UnsupportedEncodingException | FileNotFoundException e) {
+		}
+	}
+	private void closeFile(){
+		try {
+			out.close();
+		} catch (IOException ex3) {
+		}
 	}
 }

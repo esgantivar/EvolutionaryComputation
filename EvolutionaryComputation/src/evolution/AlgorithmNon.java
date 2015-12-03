@@ -32,7 +32,6 @@ public class AlgorithmNon<T> {
 			Function<T> f) {
 		space = space_;
 		selector = selector_;
-
 		operators = operators_;
 		maxIterations = max;
 		pop = new Population<>(space.getDimension(), nPop_, space_, f, operators.size());
@@ -63,7 +62,8 @@ public class AlgorithmNon<T> {
 	@SuppressWarnings("unchecked")
 	public void iterate() {
 		int t = 0;
-		while (t < maxIterations) {
+		
+		while (t<maxIterations && pop.getIndividual(0).getFitness() != -1.0) {
 			parents = new Population<>(pop);
 			parentsRou = selector.getParents();
 			offsprings = new Population<>(pop.popSize());

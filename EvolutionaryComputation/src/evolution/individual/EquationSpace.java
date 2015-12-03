@@ -59,7 +59,7 @@ public class EquationSpace extends Space<Equation> {
 	public Equation next() {
 		Equation t;
 		while (true) {
-			t = generateEquation(2);
+			t = generateEquation(4);
 			try {
 				Evaluator.evalue(t.toString(), target);
 				break;
