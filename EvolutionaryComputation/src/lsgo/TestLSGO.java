@@ -7,6 +7,7 @@ import evolution.Algorithm;
 import evolution.AlgorithmDC;
 import evolution.AlgorithmNon;
 import evolution.individual.EquationSpace;
+import evolution.individual.Individual;
 import evolution.individual.RealSpace;
 import evolution.individual.Space;
 import evolution.individual.gp.Equation;
@@ -18,6 +19,7 @@ import evolution.operators.OneFifthRule;
 import evolution.operators.Operator;
 import evolution.operators.PivotXOver;
 import evolution.operators.UniformMutation;
+import evolution.operators.gp.ExternalDeepSwap;
 import evolution.operators.gp.InternalSwap;
 import evolution.operators.gp.MutationEquation;
 import evolution.operators.gp.MutationInternal;
@@ -39,49 +41,98 @@ import function.lsgo.Factory;
 public class TestLSGO {
 
 	public static void main(String args[]) {
-		equationSearh();
-		//realSearch();
+		/*Function<Double> M1 = new M1();
+		Function<Double> M2 = new M2();
+		Function<Double> M3 = new M3();
+		Function<Double> M4 = new M4();
+		List<Double> x = new ArrayList<>();
+		double temp = 0.0;
+		x.add(temp);
+		for (int i = 0; i < 100; i++) {
+			x.add(temp);
+			temp+=0.01;
+		}
+		List<Double> fx = new ArrayList<>();
+		for (Double d : x) {
+			List<Double> ltemp = new ArrayList<>();
+			ltemp.add(d);
+			fx.add(M4.apply(ltemp));
+		}
+		
+		for (Double double1 : fx) {
+			System.out.println(double1);
+		}*/
+		
+		
+		equationSearhMax();
+		//realSearchDC();
+		//realSearch("f3");
 	}
-	
-	public static void equationSearh(){
-		String[][] examples = {
-				{"geq(0,1)", "false"},
-				{"geq(0,0)", "true"},
-				{"geq(1,0)", "true"},
-				{"geq(1,1)", "true"},
-				{"geq(1,2)", "false"},
-				{"geq(2,1)", "true"},
-				{"geq(2,5)", "false"},
-				{"geq(5,2)", "true"},
-				{"geq(3,3)", "true"}
-				};
-		String[] functor = {"geq", "s"};
-		int[] arityFun = {2, 1};
-		String[] terminal = {"0", "X", "Y","true","false"};
-		int DIM = 3;
+
+	public static void equationSearhEq() {
+		String[][] examples = { { "geq(0,1)", "false" }, { "geq(0,0)", "true" }, { "geq(1,0)", "true" },
+				{ "geq(1,1)", "true" }, { "geq(1,2)", "false" }, { "geq(2,1)", "true" }, { "geq(2,5)", "false" },
+				{ "geq(5,2)", "true" }, { "geq(3,3)", "true" } };
+		String[] functor = { "geq", "s" };
+		int[] arityFun = { 2, 1 };
+		String[] terminal = { "0", "X", "Y", "true", "false" };
+		int DIM = 4;
 		Space<Equation> space = new EquationSpace(functor, arityFun, terminal, DIM, 10, "geq(0,1)");
 		Function<Equation> f = new FitnessTree(examples);
 		int nPop = 100;
-		int maxIterations = 20;
+		int maxIterations = 200;
 		List<Operator<Equation>> operators = new ArrayList<>();
-		//operators.add(new XOverEquation());
+		operators.add(new XOverEquation());
 		operators.add(new Swap());
 		operators.add(new InternalSwap());
-		operators.add(new MutationInternal((EquationSpace)space));
-		operators.add(new MutationEquation((EquationSpace)space));
+		//operators.add(new MutationInternal((EquationSpace) space));
+		//operators.add(new MutationEquation((EquationSpace) space));
+		operators.add(new ExternalDeepSwap());
 		Selector selector = new Roulette();
-		
+
 		AlgorithmNon<Equation> search = new AlgorithmNon<Equation>(nPop, space, selector, operators, maxIterations, f);
 		search.iterate();
-		
+
 	}
-		
-	public static void realSearchDC(){
-		double min = -100;
-		double max = 100;
-		int DIM = 1000;
+
+	public static void equationSearhMax() {
+		String[][] examples = { { "max(0,0)", "0" }, // 1
+				{ "max(1,1)", "1" }, //
+				{ "max(0,8)", "8" }, // 2
+				{ "max(8,0)", "8" }, // 3
+				{ "max(5,8)", "8" }, // 4
+				{ "max(8,5)", "8" }, // 5
+				//{ "max(5,10)", "10" }, // 5
+				//{ "max(10,5)", "10" }, // 6
+		};
+
+		String[] functor = { "max", "s" };
+		int[] arityFun = { 2, 1 };
+		String[] terminal = { "0", "X", "Y" };
+		int DIM = 4;
+		Space<Equation> space = new EquationSpace(functor, arityFun, terminal, DIM, 10, "max(0,1)");
+		Function<Equation> f = new FitnessTree(examples);
 		int nPop = 100;
-		int maxIterations = 10000;
+		int maxIterations = 200;
+		List<Operator<Equation>> operators = new ArrayList<>();
+		operators.add(new XOverEquation());
+		operators.add(new Swap());
+		operators.add(new InternalSwap());
+		//operators.add(new ExternalDeepSwap());
+		//operators.add(new MutationInternal((EquationSpace) space));
+		operators.add(new MutationEquation((EquationSpace) space));
+		Selector selector = new Roulette();
+		AlgorithmNon<Equation> search = new AlgorithmNon<Equation>(nPop, space, selector, operators, maxIterations, f);
+		search.iterate();
+
+	}
+
+	public static void realSearchDC() {
+		double min = 0.0;
+		double max = 1.0;
+		int DIM = 1;
+		int nPop = 100;
+		int maxIterations = 200;
 		Space<Double> space = new RealSpace(min, max, DIM);
 		Selector selector = new Roulette();
 		AdaptMutationIntensity adapt = new OneFifthRule(100, 0.5);
@@ -90,20 +141,16 @@ public class TestLSGO {
 		List<Operator<Double>> operators = new ArrayList<>();
 		Inbreeding strategy = new DynamicInbreeding();
 		operators.add(new LinearXOver());
-		//operators.add(new UniformMutation(space,0.05));
-		operators.add(new GaussianMutation(0.5,adapt,0.02));
-		operators.add(new UniformMutation(space,0.01));
-		operators.add(new AllXOver());
-		//operators.add(new PivotXOver());
-		Function<Double> f = Factory.CEC2013_LSGO("f15");
-		//Function<Double> f = new Schwefel();
-		//Algorithm<Double> search = new Algorithm<>(nPop, space, selector, replacement, operators, maxIterations, f);
-		//search.iterate();
-		AlgorithmDC<Double> searchDC = new AlgorithmDC<>(nPop, space, strategy, replacement, operators, maxIterations, f, distance);
+		operators.add(new GaussianMutation(0.5, adapt));
+		operators.add(new UniformMutation(space, 0.01));
+		Function<Double> f = new M4();
+
+		AlgorithmDC<Double> searchDC = new AlgorithmDC<>(nPop, space, strategy, replacement, operators, maxIterations,
+				f, distance);
 		searchDC.iterate();
 	}
-	
-	public static void realSearch(){
+
+	public static void realSearch(String funName) {
 		double min = -100;
 		double max = 100;
 		int DIM = 1000;
@@ -111,17 +158,17 @@ public class TestLSGO {
 		int maxIterations = 10000;
 		Space<Double> space = new RealSpace(min, max, DIM);
 		Selector selector = new Roulette();
-		AdaptMutationIntensity adapt = new OneFifthRule(100, 0.9);
+		AdaptMutationIntensity adapt = new OneFifthRule(200, 0.9);
 		Replacement<Double> replacement = new Generational();
 		List<Operator<Double>> operators = new ArrayList<>();
 		operators.add(new LinearXOver());
-		//operators.add(new UniformMutation(space,0.05));
-		operators.add(new GaussianMutation(0.1,adapt,0.02));
-		operators.add(new UniformMutation(space,0.02));
-		//operators.add(new AllXOver());
-		//operators.add(new PivotXOver());
-		Function<Double> f = Factory.CEC2013_LSGO("f1");
-		//Function<Double> f = new Schwefel();
+		// operators.add(new UniformMutation(space,0.05));
+		operators.add(new GaussianMutation(0.1, adapt, 0.01));
+		operators.add(new UniformMutation(space, 0.01));
+		operators.add(new AllXOver());
+		// operators.add(new PivotXOver());
+		Function<Double> f = Factory.CEC2013_LSGO(funName);
+		// Function<Double> f = new Schwefel();
 		Algorithm<Double> search = new Algorithm<>(nPop, space, selector, replacement, operators, maxIterations, f);
 		search.iterate();
 	}
@@ -1132,7 +1179,7 @@ public class TestLSGO {
 		for (Double r : y) {
 			x.add(r);
 		}
-		
+
 		return x;
 	}
 }
