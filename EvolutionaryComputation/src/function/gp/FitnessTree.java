@@ -36,7 +36,7 @@ public class FitnessTree implements Function<Equation> {
 			fitness = Double.NEGATIVE_INFINITY;
 			return -1*Double.NEGATIVE_INFINITY;
 		}
-		return -1*fitness;
+		return (-1*fitness)/((double)examples.length);
 	}
 
 }
