@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import evolution.individual.Individual;
+import evolution.individual.Space;
 
 public class GaussianMutation extends Operator<Double> {
 	private AdaptMutationIntensity intensity;
@@ -12,6 +13,7 @@ public class GaussianMutation extends Operator<Double> {
 	private double rate;
 	private Random rnd;
 	private boolean flag = false;
+	private Space<Double> space;
 
 	public GaussianMutation(double sigma_, AdaptMutationIntensity intensity_, double rate_) {
 		intensity = intensity_;
@@ -34,6 +36,14 @@ public class GaussianMutation extends Operator<Double> {
 		intensity = intensity_;
 		rnd = new Random();
 		rate = 0.5;
+	}
+	
+	public GaussianMutation(double sigma_, AdaptMutationIntensity intensity_,Space<Double> space_) {
+		sigma = sigma_;
+		intensity = intensity_;
+		rnd = new Random();
+		rate = 0.5;
+		space = space_;
 	}
 
 	@Override
@@ -85,18 +95,26 @@ public class GaussianMutation extends Operator<Double> {
 			for (int i = 0; i < nGene; i++) {
 				if(Math.random() > rate){
 					//ind.setGene(i, ind.getGene(i)+delta[i]);
-					temp[i]=(temp[i]+delta[i])%1;
-					if(temp[i] < 0){
-						temp[i]=temp[i]+1;
+					double min = space.limitLow();
+					double max = space.limitHigh();
+					temp[i]=(temp[i]+delta[i]);
+					double mod = ((temp[i]-min)%(max-min))+min;
+					if(mod < min){
+						mod += (max-min);
 					}
+					temp[i] = mod;
 				}
 			}
+			
+			
+			
 			Individual<Double> newInd = new Individual<>(ind.getFunction(), temp);
 			double fAfter = newInd.computeFitness();
 			double pro = (fAfter / fBefore) - 1.0;
 			if (intensity != null) {
 				sigma = intensity.apply(sigma, pro);
 			}
+			newInd.setRates(ind.getRates());
 			return newInd;
 		}
 	}
