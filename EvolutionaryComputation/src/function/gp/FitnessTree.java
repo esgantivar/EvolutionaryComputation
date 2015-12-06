@@ -33,8 +33,8 @@ public class FitnessTree implements Function<Equation> {
 				}
 			}
 		} catch (ProgramException | GoalException | LexicalException | SyntacticalException ex) {
-			fitness = Double.NEGATIVE_INFINITY;
-			return -1*Double.NEGATIVE_INFINITY;
+			fitness -= 1;
+			//return -1*Double.NEGATIVE_INFINITY;
 		}
 		return (-1*fitness)/((double)examples.length);
 	}

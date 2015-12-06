@@ -4,12 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FitnessCentroid implements Function<Double> {
-	private static Writer out = null;
 	private Double[][] dataset = null;
 	private Double[] distances = null;
 	private double sigma;
@@ -91,6 +89,7 @@ public class FitnessCentroid implements Function<Double> {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void weights() {
 		int i = 0;
 		for (Double dis : distances) {
