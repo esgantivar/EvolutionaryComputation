@@ -65,6 +65,9 @@ public class TestLSGO {
 		
 		
 		equationSearhMax();
+		//equationSearhEq();
+		//equationSearhOr();
+		
 		//realSearchDC();
 		//realSearch("f3");
 	}
@@ -94,6 +97,37 @@ public class TestLSGO {
 		search.iterate();
 
 	}
+	
+	public static void equationSearhOr() {
+		String[][] examples = { { "or(true,true)", "true" }, // 1
+				{ "or(false,true)", "true" }, //
+				{ "or(true,false)", "true" }, // 2
+				{ "or(false,false)", "false" }, // 3
+				//{ "max(5,10)", "10" }, // 5
+				//{ "max(10,5)", "10" }, // 6
+		};
+
+		String[] functor = { "or" };
+		int[] arityFun = { 2, 1 };
+		String[] terminal = { "true", "false" };
+		int DIM = 2;
+		Space<Equation> space = new EquationSpace(functor, arityFun, terminal, DIM, 10, "or(true,false)");
+		Function<Equation> f = new FitnessTree(examples);
+		int nPop = 200;
+		int maxIterations = 200;
+		List<Operator<Equation>> operators = new ArrayList<>();
+		operators.add(new XOverEquation());
+		operators.add(new Swap());
+		operators.add(new InternalSwap());
+		operators.add(new MutationInternal((EquationSpace) space));
+		operators.add(new MutationEquation((EquationSpace) space));
+		operators.add(new ExternalDeepSwap());
+		Selector selector = new Roulette();
+
+		AlgorithmNon<Equation> search = new AlgorithmNon<Equation>(nPop, space, selector, operators, maxIterations, f);
+		search.iterate();
+
+	}
 
 	public static void equationSearhMax() {
 		String[][] examples = { { "max(0,0)", "0" }, // 1
@@ -112,15 +146,15 @@ public class TestLSGO {
 		int DIM = 4;
 		Space<Equation> space = new EquationSpace(functor, arityFun, terminal, DIM, 10, "max(0,1)");
 		Function<Equation> f = new FitnessTree(examples);
-		int nPop = 100;
+		int nPop = 200;
 		int maxIterations = 200;
 		List<Operator<Equation>> operators = new ArrayList<>();
 		operators.add(new XOverEquation());
 		operators.add(new Swap());
 		operators.add(new InternalSwap());
-		//operators.add(new ExternalDeepSwap());
+		operators.add(new ExternalDeepSwap());
 		//operators.add(new MutationInternal((EquationSpace) space));
-		operators.add(new MutationEquation((EquationSpace) space));
+		//operators.add(new MutationEquation((EquationSpace) space));
 		Selector selector = new Roulette();
 		AlgorithmNon<Equation> search = new AlgorithmNon<Equation>(nPop, space, selector, operators, maxIterations, f);
 		search.iterate();
